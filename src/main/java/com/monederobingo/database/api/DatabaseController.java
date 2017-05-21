@@ -1,7 +1,6 @@
 package com.monederobingo.database.api;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.model.SelectRequest;
 import com.monederobingo.database.model.ServiceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +21,9 @@ public class DatabaseController
     }
 
     @RequestMapping
-    public ResponseEntity<ServiceResult> select(@RequestBody SelectRequest selectRequest) throws Exception
+    public ResponseEntity<ServiceResult> select(@RequestBody String query) throws Exception
     {
-        ServiceResult serviceResult = databaseService.select(selectRequest);
+        ServiceResult serviceResult = databaseService.select(query);
         return new ResponseEntity<>(serviceResult, HttpStatus.OK);
     }
 }

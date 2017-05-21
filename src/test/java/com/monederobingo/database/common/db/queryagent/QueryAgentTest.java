@@ -1,7 +1,6 @@
 package com.monederobingo.database.common.db.queryagent;
 
 import com.monederobingo.database.common.db.util.DbBuilder;
-import com.monederobingo.database.model.DbValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,8 +72,8 @@ public class QueryAgentTest extends BaseRepositoryTest {
             }
 
             @Override
-            public DbValue[] values() {
-                return new DbValue[0];
+            public Object[] values() {
+                return new Object[0];
             }
 
             @Override
@@ -100,8 +99,8 @@ public class QueryAgentTest extends BaseRepositoryTest {
             }
 
             @Override
-            public DbValue[] values() {
-                return new DbValue[0];
+            public Object[] values() {
+                return new Object[0];
             }
 
             @Override
@@ -132,8 +131,8 @@ public class QueryAgentTest extends BaseRepositoryTest {
             }
 
             @Override
-            public DbValue[] values() {
-                return new DbValue[0];
+            public Object[] values() {
+                return new Object[0];
             }
 
             @Override
@@ -155,8 +154,8 @@ public class QueryAgentTest extends BaseRepositoryTest {
             }
 
             @Override
-            public DbValue[] values() {
-                return new DbValue[0];
+            public Object[] values() {
+                return new Object[0];
             }
 
             @Override
