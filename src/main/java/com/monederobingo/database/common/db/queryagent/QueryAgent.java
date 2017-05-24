@@ -46,7 +46,7 @@ public class QueryAgent {
      * @param id  Column name of the generated key to be returned from the query execution.
      * @return The generated key of the id column returned from the query execution.
      */
-    long executeInsert(String sql, String id) throws Exception {
+    public long executeInsert(String sql, String id) throws Exception {
         Connection connection = getConnection();
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql, Statement.RETURN_GENERATED_KEYS);
