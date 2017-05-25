@@ -64,7 +64,7 @@ public class QueryAgent {
      * @param sql Update statement to be executed.
      * @return The number of rows returned from the query.
      */
-    int executeUpdate(String sql) throws Exception {
+    public int executeUpdate(String sql) throws Exception {
         Connection connection = getConnection();
         try (Statement statement = connection.createStatement()) {
             return statement.executeUpdate(sql);
@@ -80,7 +80,7 @@ public class QueryAgent {
      * @param <T>     Type of object to be returned as list and built by DbBuilder
      * @return The list of type T built from the select statement execution
      */
-    synchronized <T> List<T> selectList(DbBuilder<T> builder) throws Exception {
+    public synchronized <T> List<T> selectList(DbBuilder<T> builder) throws Exception {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection.prepareStatement(builder.sql())) {
             setValues(statement, builder.values());
