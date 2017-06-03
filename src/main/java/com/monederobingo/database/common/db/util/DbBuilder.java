@@ -9,5 +9,5 @@ public abstract class DbBuilder<T>
 
     public abstract Object[] values();
 
-    public abstract T build(ResultSet resultSet) throws SQLException;
+    public abstract T build(ResultSet resultSet) throws Exception;
 }

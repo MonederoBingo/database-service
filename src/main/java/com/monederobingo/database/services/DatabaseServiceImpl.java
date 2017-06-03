@@ -7,15 +7,13 @@ import com.monederobingo.database.common.db.util.DbBuilder;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
+import com.monederobingo.database.model.UpdateQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.monederobingo.database.model.UpdateQuery;
 import org.json.JSONObject;
-import org.postgresql.jdbc2.AbstractJdbc2ResultSet;
-import org.postgresql.jdbc2.AbstractJdbc2ResultSetMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +46,7 @@ public class DatabaseServiceImpl implements DatabaseService
             }
 
             @Override
-            public String build(ResultSet resultSet) throws SQLException
+            public String build(ResultSet resultSet) throws Exception
             {
                 int columnCount = resultSet.getMetaData().getColumnCount();
                 JSONObject jsonObject = new JSONObject();
@@ -60,7 +58,7 @@ public class DatabaseServiceImpl implements DatabaseService
         return new ServiceResult<>(true, "", object);
     }
 
-    private void buildObject(ResultSet resultSet, int columnCount, JSONObject jsonObject) throws SQLException
+    private void buildObject(ResultSet resultSet, int columnCount, JSONObject jsonObject) throws Exception
     {
         for (int i = 1; i <= columnCount; i++)
         {
@@ -90,7 +88,7 @@ public class DatabaseServiceImpl implements DatabaseService
             }
 
             @Override
-            public String build(ResultSet resultSet) throws SQLException
+            public String build(ResultSet resultSet) throws Exception
             {
                 int columnCount = resultSet.getMetaData().getColumnCount();
                 JSONObject jsonObject = new JSONObject();
