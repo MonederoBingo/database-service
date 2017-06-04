@@ -12,7 +12,7 @@ import java.sql.Statement;
 import org.junit.After;
 import org.junit.Before;
 
-public class BaseRepositoryTest
+public class BaseRepositoryIntegrationTest
 {
 
     private static QueryAgent _queryAgent;

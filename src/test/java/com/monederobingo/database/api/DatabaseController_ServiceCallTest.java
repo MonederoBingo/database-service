@@ -1,6 +1,9 @@
 package com.monederobingo.database.api;
 
+import static org.mockito.Mockito.verify;
+
 import com.monederobingo.database.api.interfaces.DatabaseService;
+import com.monederobingo.database.libs.MonederoLogger;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.UpdateQuery;
@@ -10,70 +13,65 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.verify;
-
 @RunWith(MockitoJUnitRunner.class)
-public class DatabaseControllerTest
+public class DatabaseController_ServiceCallTest
 {
     private DatabaseController controller;
+    private SelectQuery selectQuery;
+    private InsertQuery insertQuery;
+    private UpdateQuery updateQuery;
+
     @Mock
     private DatabaseService service;
+    @Mock
+    private MonederoLogger logger;
 
     @Before
     public void setUp() throws Exception
     {
-        controller = new DatabaseController(service);
+        controller = new DatabaseController(service, logger);
+        selectQuery = new SelectQuery();
+        insertQuery = new InsertQuery();
+        updateQuery = new UpdateQuery();
     }
 
-    @Test public void shouldCallDatabaseServiceForSelect() throws Exception
+    @Test
+    public void shouldCallDatabaseServiceForSelect() throws Exception
     {
-        //given
-        SelectQuery selectQuery = new SelectQuery();
-
-        //when
+        // when
         controller.select(selectQuery);
 
-        //then
+        // then
         verify(service).select(selectQuery);
     }
 
     @Test
     public void shouldCallDatabaseServiceForSelectList() throws Exception
     {
-        //given
-        SelectQuery selectQuery = new SelectQuery();
-
-        //when
+        // when
         controller.selectList(selectQuery);
 
-        //then
+        // then
         verify(service).selectList(selectQuery);
     }
 
     @Test
     public void shouldCallDatabaseServiceForInsert() throws Exception
     {
-        //given
-        InsertQuery insertQuery = new InsertQuery();
-
-        //when
+        // when
         controller.insert(insertQuery);
 
-        //then
+        // then
         verify(service).insert((insertQuery));
     }
 
     @Test
     public void shouldCallDatabaseServiceForUpdate() throws Exception
     {
-        //given
-        UpdateQuery updateQuery = new UpdateQuery();
-
-        //when
+        // when
         controller.update(updateQuery);
 
-        //then
+        // then
         verify(service).update(updateQuery);
     }
-
 }

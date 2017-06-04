@@ -12,7 +12,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class QueryAgentTest extends BaseRepositoryTest {
+public class QueryAgentIntegrationTest extends BaseRepositoryIntegrationTest
+{
 
     private static final String CREATE_DUMMY_TABLE = "CREATE TABLE IF NOT EXISTS dummy (" +
             "  dummy_id    SERIAL PRIMARY KEY," +
