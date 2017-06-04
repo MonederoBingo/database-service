@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/acceptance_test/transaction")
 public class AcceptanceTestTransactionController
 {
-
     private final FunctionalTestTransactionService _functionalTestTransactionService;
 
     @Autowired

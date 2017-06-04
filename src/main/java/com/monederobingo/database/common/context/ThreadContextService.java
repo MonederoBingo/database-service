@@ -1,6 +1,5 @@
 package com.monederobingo.database.common.context;
 
-import com.monederobingo.database.common.db.queryagent.QueryAgent;
 import com.monederobingo.database.common.environments.Environment;
 
 public interface ThreadContextService {
@@ -9,7 +8,7 @@ public interface ThreadContextService {
 
     ThreadContext getThreadContext();
 
-    QueryAgent getQueryAgent();
+    Environment getEnvironment();
 
     void setThreadContextOnThread(ThreadContext threadContext);
 }

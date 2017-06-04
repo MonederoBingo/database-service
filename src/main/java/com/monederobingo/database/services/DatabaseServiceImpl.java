@@ -3,6 +3,7 @@ package com.monederobingo.database.services;
 import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.common.context.ThreadContextService;
 import com.monederobingo.database.common.db.queryagent.QueryAgent;
+import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import com.monederobingo.database.common.db.util.DbBuilder;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
@@ -21,11 +22,13 @@ import org.springframework.stereotype.Component;
 public class DatabaseServiceImpl implements DatabaseService
 {
     private final ThreadContextService threadContextService;
+    private final QueryAgentFactory queryAgentFactory;
 
     @Autowired
-    public DatabaseServiceImpl(ThreadContextService threadContextService)
+    public DatabaseServiceImpl(ThreadContextService threadContextService, QueryAgentFactory queryAgentFactory)
     {
         this.threadContextService = threadContextService;
+        this.queryAgentFactory = queryAgentFactory;
     }
 
     @Override
@@ -102,7 +105,7 @@ public class DatabaseServiceImpl implements DatabaseService
 
     private QueryAgent getQueryAgent()
     {
-        return threadContextService.getQueryAgent();
+        return queryAgentFactory.getQueryAgent(threadContextService.getEnvironment());
     }
 
     @Override public ServiceResult insert(InsertQuery query) throws Exception

@@ -1,6 +1,5 @@
 package com.monederobingo.database.common.context;
 
-import com.monederobingo.database.common.db.queryagent.QueryAgent;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import com.monederobingo.database.common.environments.Environment;
 import com.monederobingo.database.common.i18n.Language;
@@ -12,37 +11,42 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON, proxyMode = ScopedProxyMode.INTERFACES)
-public class ThreadContextServiceImpl implements ThreadContextService {
+public class ThreadContextServiceImpl implements ThreadContextService
+{
+
     private static final ThreadLocal<ThreadContext> THREAD_CONTEXT = new ThreadLocal<>();
     private final QueryAgentFactory _queryAgentFactory;
 
     @Autowired
-    public ThreadContextServiceImpl(QueryAgentFactory queryAgentFactory) {
+    public ThreadContextServiceImpl(QueryAgentFactory queryAgentFactory)
+    {
         _queryAgentFactory = queryAgentFactory;
     }
 
     @Override
-    public void initializeContext(Environment environment, String language) {
+    public void initializeContext(Environment environment, String language)
+    {
         ThreadContext threadContext = new ThreadContext();
-        final QueryAgent queryAgent = _queryAgentFactory.getQueryAgent(environment);
-        threadContext.setClientQueryAgent(queryAgent);
         threadContext.setLanguage(Language.getByLangId(language));
         threadContext.setEnvironment(environment);
         setThreadContextOnThread(threadContext);
     }
 
     @Override
-    public ThreadContext getThreadContext() {
+    public ThreadContext getThreadContext()
+    {
         return THREAD_CONTEXT.get();
     }
 
     @Override
-    public QueryAgent getQueryAgent() {
-        return getThreadContext().getClientQueryAgent();
+    public Environment getEnvironment()
+    {
+        return getThreadContext().getEnvironment();
     }
 
     @Override
-    public void setThreadContextOnThread(ThreadContext threadContext) {
+    public void setThreadContextOnThread(ThreadContext threadContext)
+    {
         THREAD_CONTEXT.set(threadContext);
     }
 }
