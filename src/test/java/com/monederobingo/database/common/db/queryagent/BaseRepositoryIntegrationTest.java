@@ -1,10 +1,10 @@
 package com.monederobingo.database.common.db.queryagent;
 
+import com.monederobingo.libs.common.environments.DevEnvironment;
+import com.monederobingo.libs.common.environments.UnitTestEnvironment;
 import com.monederobingo.database.common.db.datasources.DataSourceFactory;
-import com.monederobingo.database.common.environments.UnitTestEnvironment;
 import com.monederobingo.database.common.db.datasources.DataSourceFactoryImpl;
 import com.monederobingo.database.common.db.util.DBUtil;
-import com.monederobingo.database.common.environments.DevEnvironment;
 
 import java.sql.Connection;
 import java.sql.Statement;

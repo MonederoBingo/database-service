@@ -1,14 +1,14 @@
 package com.monederobingo.database.services;
 
-import com.monederobingo.database.common.context.ThreadContext;
-import com.monederobingo.database.common.context.ThreadContextService;
+import com.monederobingo.libs.common.context.ThreadContext;
+import com.monederobingo.libs.common.context.ThreadContextService;
+import com.monederobingo.libs.common.environments.DevEnvironment;
+import com.monederobingo.libs.common.environments.Environment;
+import com.monederobingo.libs.common.environments.FunctionalTestEnvironment;
+import com.monederobingo.libs.common.environments.ProdEnvironment;
+import com.monederobingo.libs.common.environments.UATEnvironment;
 import com.monederobingo.database.common.db.queryagent.QueryAgent;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
-import com.monederobingo.database.common.environments.DevEnvironment;
-import com.monederobingo.database.common.environments.Environment;
-import com.monederobingo.database.common.environments.FunctionalTestEnvironment;
-import com.monederobingo.database.common.environments.ProdEnvironment;
-import com.monederobingo.database.common.environments.UATEnvironment;
 
 public class BaseServiceImpl
 {

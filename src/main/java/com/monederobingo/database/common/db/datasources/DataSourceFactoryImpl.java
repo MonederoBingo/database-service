@@ -2,8 +2,8 @@ package com.monederobingo.database.common.db.datasources;
 
 import javax.sql.DataSource;
 
+import com.monederobingo.libs.common.environments.Environment;
 import com.monederobingo.database.common.db.util.DBUtil;
-import com.monederobingo.database.common.environments.Environment;
 import com.monederobingo.database.common.db.util.concurrent.Computable;
 import com.monederobingo.database.common.db.util.concurrent.Memoizer;
 import org.springframework.beans.factory.annotation.Autowired;

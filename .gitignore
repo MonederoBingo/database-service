@@ -2,3 +2,5 @@
 *.iml
 .gradle
 build
+database-service.ipr
+database-service.iws

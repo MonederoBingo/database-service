@@ -1,7 +1,7 @@
 package com.monederobingo.database.services;
 
+import com.monederobingo.libs.common.context.ThreadContextService;
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.common.context.ThreadContextService;
 import com.monederobingo.database.common.db.queryagent.QueryAgent;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import com.monederobingo.database.common.db.util.DbBuilder;

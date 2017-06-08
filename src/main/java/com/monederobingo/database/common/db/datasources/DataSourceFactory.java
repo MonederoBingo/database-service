@@ -1,6 +1,6 @@
 package com.monederobingo.database.common.db.datasources;
 
-import com.monederobingo.database.common.environments.Environment;
+import com.monederobingo.libs.common.environments.Environment;
 
 import javax.sql.DataSource;
 

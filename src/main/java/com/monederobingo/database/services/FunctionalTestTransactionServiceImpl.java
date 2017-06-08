@@ -1,7 +1,7 @@
 package com.monederobingo.database.services;
 
+import com.monederobingo.libs.common.context.ThreadContextService;
 import com.monederobingo.database.api.interfaces.FunctionalTestTransactionService;
-import com.monederobingo.database.common.context.ThreadContextService;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
