@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DatabaseConfiguration
+public class AppConfiguration
 {
     @Bean
     public ThreadContextService getThreadContextService()
