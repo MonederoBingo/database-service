@@ -3,7 +3,7 @@ package com.monederobingo.database.api;
 import static org.mockito.Mockito.verify;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.libs.MonederoLogger;
+import com.monederobingo.database.libs.ServiceLogger;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.UpdateQuery;
@@ -24,7 +24,7 @@ public class DatabaseController_ServiceCallTest
     @Mock
     private DatabaseService service;
     @Mock
-    private MonederoLogger logger;
+    private ServiceLogger logger;
 
     @Before
     public void setUp() throws Exception

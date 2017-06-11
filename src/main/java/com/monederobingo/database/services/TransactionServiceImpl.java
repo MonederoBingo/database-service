@@ -6,6 +6,8 @@ import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
+
 @Component
 public class TransactionServiceImpl extends BaseServiceImpl implements TransactionService
 {
@@ -15,12 +17,14 @@ public class TransactionServiceImpl extends BaseServiceImpl implements Transacti
     }
 
     @Override
-    public void beginTransaction() {
+    public void beginTransaction() throws SQLException
+    {
         getQueryAgent().beginTransactionForFunctionalTest();
     }
 
     @Override
-    public void rollbackTransaction() {
+    public void rollbackTransaction() throws SQLException
+    {
         getQueryAgent().rollbackTransactionForFunctionalTest();
     }
 }

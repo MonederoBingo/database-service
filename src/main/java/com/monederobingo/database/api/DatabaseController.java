@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.libs.MonederoLogger;
+import com.monederobingo.database.libs.ServiceLogger;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
@@ -16,21 +16,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class DatabaseController
 {
     private final DatabaseService databaseService;
-    private final MonederoLogger logger;
+    private final ServiceLogger logger;
 
     @Autowired
-    public DatabaseController(DatabaseService databaseService, MonederoLogger logger)
+    public DatabaseController(DatabaseService databaseService, ServiceLogger logger)
     {
         this.databaseService = databaseService;
         this.logger = logger;
     }
 
     @RequestMapping(method = POST, value = "/select")
-    public ResponseEntity<ServiceResult> select(@RequestBody SelectQuery query)
+    public ResponseEntity<ServiceResult<String>> select(@RequestBody SelectQuery query)
     {
         try
         {
@@ -39,12 +41,12 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(method = POST, value = "/selectList")
-    public ResponseEntity<ServiceResult> selectList(@RequestBody SelectQuery query) throws Exception
+    public ResponseEntity<ServiceResult<List<String>>> selectList(@RequestBody SelectQuery query) throws Exception
     {
         try
         {
@@ -53,12 +55,12 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(method = POST, value = "/insert")
-    public ResponseEntity<ServiceResult> insert(@RequestBody InsertQuery query) throws Exception
+    public ResponseEntity<ServiceResult<Long>> insert(@RequestBody InsertQuery query) throws Exception
     {
         try
         {
@@ -67,12 +69,12 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(method = POST, value = "/update")
-    public ResponseEntity<ServiceResult> update(@RequestBody UpdateQuery query) throws Exception
+    public ResponseEntity<ServiceResult<Integer>> update(@RequestBody UpdateQuery query) throws Exception
     {
         try
         {
@@ -81,7 +83,7 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
         }
     }
 }

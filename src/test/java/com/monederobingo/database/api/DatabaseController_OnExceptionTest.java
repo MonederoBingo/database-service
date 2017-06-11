@@ -1,18 +1,17 @@
 package com.monederobingo.database.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
+import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.libs.MonederoLogger;
+import com.monederobingo.database.libs.ServiceLogger;
 import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
 import com.monederobingo.database.model.UpdateQuery;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,73 +30,66 @@ public class DatabaseController_OnExceptionTest
     @Mock
     private DatabaseService service;
     @Mock
-    private MonederoLogger logger;
+    private ServiceLogger serviceLogger;
 
     @Before
     public void setUp() throws Exception
     {
-        controller = new DatabaseController(service, logger);
+        controller = new DatabaseController(service, serviceLogger);
         selectQuery = new SelectQuery();
         insertQuery = new InsertQuery();
         updateQuery = new UpdateQuery();
     }
 
     @Test
-    public void shouldReturnErrorResponseForSelectWhenExceptionIsThrown() throws Exception
+    public void shouldReturnErrorResponseForSelectWhenExceptionIsCaught() throws Exception
     {
         // given
         given(service.select(selectQuery)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult> response = controller.select(selectQuery);
+        ResponseEntity<ServiceResult<String>> response = controller.select(selectQuery);
 
         // then
-        assertFailedResponse(response);
-    }
-
-    private void assertFailedResponse(ResponseEntity<ServiceResult> response)
-    {
-        assertFalse(response.getBody().isSuccess());
-        assertEquals(INTERNAL_SERVER_ERROR, response.getStatusCode());
-        verify(logger).error(any(), any(Exception.class));
+        assertFailedResponse(response, serviceLogger);
     }
 
     @Test
-    public void shouldReturnErrorResponseForSelectListWhenExceptionIsThrown() throws Exception
+    public void shouldReturnErrorResponseForSelectListWhenExceptionIsCaught() throws Exception
     {
         // given
         given(service.selectList(selectQuery)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult> response = controller.selectList(selectQuery);
+        ResponseEntity<ServiceResult<List<String>>> response = controller.selectList(selectQuery);
 
         // then
-        assertFailedResponse(response);
+        assertFailedResponse(response, serviceLogger);
     }
 
     @Test
-    public void shouldReturnErrorResponseForInsertWhenExceptionIsThrown() throws Exception
+    public void shouldReturnErrorResponseForInsertWhenExceptionIsCaught() throws Exception
     {
         // given
         given(service.insert(insertQuery)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult> response = controller.insert(insertQuery);
+        ResponseEntity<ServiceResult<Long>> response = controller.insert(insertQuery);
 
         // then
-        assertFailedResponse(response);
+        assertFailedResponse(response, serviceLogger);
     }
 
     @Test
-    public void shouldReturnErrorResponseForUpdateWhenExceptionIsThrown() throws Exception
+    public void shouldReturnErrorResponseForUpdateWhenExceptionIsCaught() throws Exception
     {
         // given
         given(service.update(updateQuery)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult> response = controller.update(updateQuery);
+        ResponseEntity<ServiceResult<Integer>> response = controller.update(updateQuery);
 
         // then
-        assertFailedResponse(response);
+        assertFailedResponse(response, serviceLogger);
     }
 }

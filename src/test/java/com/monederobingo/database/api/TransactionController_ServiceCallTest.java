@@ -1,6 +1,7 @@
 package com.monederobingo.database.api;
 
 import com.monederobingo.database.api.interfaces.TransactionService;
+import com.monederobingo.database.libs.ServiceLogger;
 import com.monederobingo.libs.common.context.ThreadContextService;
 import com.monederobingo.libs.common.environments.DevEnvironment;
 import com.monederobingo.libs.common.environments.FunctionalTestEnvironment;
@@ -32,11 +33,13 @@ public class TransactionController_ServiceCallTest
     private UATEnvironment uatEnvironment;
     @Mock
     private DevEnvironment devEnvironment;
+    @Mock
+    private ServiceLogger serviceLogger;
 
     @Before
     public void setUp() throws Exception
     {
-        transactionController = new TransactionController(transactionService, threadContextService);
+        transactionController = new TransactionController(transactionService, threadContextService, serviceLogger);
     }
 
     @Test

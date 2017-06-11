@@ -32,7 +32,7 @@ public class DatabaseServiceImpl implements DatabaseService
     }
 
     @Override
-    public ServiceResult select(SelectQuery query) throws Exception
+    public ServiceResult<String> select(SelectQuery query) throws Exception
     {
         String object = getQueryAgent().selectObject(new DbBuilder<String>()
         {
@@ -74,7 +74,7 @@ public class DatabaseServiceImpl implements DatabaseService
     }
 
     @Override
-    public ServiceResult selectList(SelectQuery query) throws Exception
+    public ServiceResult<List<String>> selectList(SelectQuery query) throws Exception
     {
         List<String> object = getQueryAgent().selectList(new DbBuilder<String>()
         {
@@ -108,13 +108,13 @@ public class DatabaseServiceImpl implements DatabaseService
         return queryAgentFactory.getQueryAgent(threadContextService.getEnvironment());
     }
 
-    @Override public ServiceResult insert(InsertQuery query) throws Exception
+    @Override public ServiceResult<Long> insert(InsertQuery query) throws Exception
     {
         long newId = getQueryAgent().executeInsert(query.getQuery(), query.getIdColumnName());
         return new ServiceResult<>(true, "", newId);
     }
 
-    @Override public ServiceResult update(UpdateQuery query) throws Exception
+    @Override public ServiceResult<Integer> update(UpdateQuery query) throws Exception
     {
         int updatedRows = getQueryAgent().executeUpdate(query.getQuery());
         return new ServiceResult<>(true, "", updatedRows);
