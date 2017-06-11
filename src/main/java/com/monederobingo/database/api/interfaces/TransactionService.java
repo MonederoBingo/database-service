@@ -1,6 +1,6 @@
 package com.monederobingo.database.api.interfaces;
 
-public interface FunctionalTestTransactionService
+public interface TransactionService
 {
     void beginTransaction();
 

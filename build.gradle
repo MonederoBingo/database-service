@@ -49,7 +49,3 @@ dependencyManagement {
 test {
 	exclude '**/*IntegrationTest*'
 }
-
-task showMeCache << {
-	configurations.compile.each { println it }
-}
