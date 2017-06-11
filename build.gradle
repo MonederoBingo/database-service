@@ -11,6 +11,10 @@ buildscript {
 	}
 }
 
+configurations {
+	extraLibs
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
@@ -36,8 +40,15 @@ dependencies {
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'com.monederobingo:libs:0.0.1'
+	extraLibs 'com.monederobingo:libs:0.0.1'
 	testCompile 'org.mockito:mockito-core:2.8.9'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+jar {
+	into('lib') {
+		from configurations.extraLibs
+	}
 }
 
 dependencyManagement {
