@@ -3,7 +3,6 @@ package com.monederobingo.database.common.db.queryagent;
 import com.monederobingo.libs.common.environments.DevEnvironment;
 import com.monederobingo.libs.common.environments.UnitTestEnvironment;
 import com.monederobingo.database.common.db.datasources.DataSourceFactory;
-import com.monederobingo.database.common.db.datasources.DataSourceFactoryImpl;
 import com.monederobingo.database.common.db.util.DBUtil;
 
 import java.sql.Connection;
@@ -29,7 +28,7 @@ public class BaseRepositoryIntegrationTest
         String dbPassword = "root";
 
         UnitTestEnvironment unitTestEnvironment = new UnitTestEnvironment(dbDriver, dbDriverClass, dbUrl, dbUser, dbPassword);
-        DataSourceFactory dataSourceFactory = new DataSourceFactoryImpl(new DBUtil(unitTestEnvironment, new DevEnvironment()));
+        DataSourceFactory dataSourceFactory = new DataSourceFactory(new DBUtil(unitTestEnvironment, new DevEnvironment()));
         _queryAgent = new QueryAgentFactoryImpl(dataSourceFactory).getQueryAgent(unitTestEnvironment);
     }
 
@@ -43,11 +42,11 @@ public class BaseRepositoryIntegrationTest
         _queryAgent.rollbackTransaction();
     }
 
-    protected QueryAgent getQueryAgent() {
+    QueryAgent getQueryAgent() {
         return _queryAgent;
     }
 
-    protected void executeFixture(String sql) throws Exception {
+    void executeFixture(String sql) throws Exception {
         if (sql != null && sql.length() > 0)
             executeSql(sql, _queryAgent.getConnection());
         else

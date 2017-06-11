@@ -1,7 +1,8 @@
 package com.monederobingo.database.api;
 
-import static com.monederobingo.database.api.ControllerAssertions.assertSuccessfulResponse;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.libs.ServiceLogger;
@@ -52,7 +53,8 @@ public class DatabaseController_OnSuccessfulResponseTest
         ResponseEntity<ServiceResult<String>> response = controller.select(selectQuery);
 
         // then
-        assertSuccessfulResponse(serviceResult, response);
+        assertEquals(serviceResult, response.getBody());
+        assertEquals(OK, response.getStatusCode());
     }
 
     @Test
@@ -66,7 +68,8 @@ public class DatabaseController_OnSuccessfulResponseTest
         ResponseEntity<ServiceResult<List<String>>> response = controller.selectList(selectQuery);
 
         // then
-        assertSuccessfulResponse(serviceResult, response);
+        assertEquals(serviceResult, response.getBody());
+        assertEquals(OK, response.getStatusCode());
     }
 
     @Test
@@ -80,7 +83,8 @@ public class DatabaseController_OnSuccessfulResponseTest
         ResponseEntity<ServiceResult<Long>> response = controller.insert(insertQuery);
 
         // then
-        assertSuccessfulResponse(serviceResult, response);
+        assertEquals(serviceResult, response.getBody());
+        assertEquals(OK, response.getStatusCode());
     }
 
     @Test
@@ -94,6 +98,7 @@ public class DatabaseController_OnSuccessfulResponseTest
         ResponseEntity<ServiceResult<Integer>> response = controller.update(updateQuery);
 
         // then
-        assertSuccessfulResponse(serviceResult, response);
+        assertEquals(serviceResult, response.getBody());
+        assertEquals(OK, response.getStatusCode());
     }
 }
