@@ -57,7 +57,7 @@ public class BaseServiceImpl
         return _threadContextService.getThreadContext();
     }
 
-    public QueryAgent getQueryAgent()
+    QueryAgent getQueryAgent() throws InterruptedException
     {
         return queryAgentFactory.getQueryAgent(_threadContextService.getEnvironment());
     }

@@ -16,7 +16,8 @@ public class QueryAgentFactoryImpl implements QueryAgentFactory {
     }
 
     @Override
-    public QueryAgent getQueryAgent(Environment environment) {
+    public QueryAgent getQueryAgent(Environment environment) throws InterruptedException
+    {
         return new QueryAgent(_dataSourceFactory.getDataSource(environment));
     }
 }

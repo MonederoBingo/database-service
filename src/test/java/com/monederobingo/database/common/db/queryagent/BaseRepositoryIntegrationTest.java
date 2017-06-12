@@ -1,9 +1,8 @@
 package com.monederobingo.database.common.db.queryagent;
 
-import com.monederobingo.libs.common.environments.DevEnvironment;
-import com.monederobingo.libs.common.environments.UnitTestEnvironment;
 import com.monederobingo.database.common.db.datasources.DataSourceFactory;
-import com.monederobingo.database.common.db.util.DBUtil;
+import com.monederobingo.database.common.db.datasources.DriverManagerDataSourceFactory;
+import com.monederobingo.libs.common.environments.UnitTestEnvironment;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -17,10 +16,18 @@ public class BaseRepositoryIntegrationTest
     private static QueryAgent _queryAgent;
 
     static {
-        loadQueryAgent();
+        try
+        {
+            loadQueryAgent();
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static void loadQueryAgent() {
+    private static void loadQueryAgent() throws InterruptedException
+    {
         String dbDriver = "jdbc:postgresql://";
         String dbDriverClass = "org.postgresql.Driver";
         String dbUrl = "localhost:5432/lealpoints_unit_test";
@@ -28,7 +35,7 @@ public class BaseRepositoryIntegrationTest
         String dbPassword = "root";
 
         UnitTestEnvironment unitTestEnvironment = new UnitTestEnvironment(dbDriver, dbDriverClass, dbUrl, dbUser, dbPassword);
-        DataSourceFactory dataSourceFactory = new DataSourceFactory(new DBUtil(unitTestEnvironment, new DevEnvironment()));
+        DataSourceFactory dataSourceFactory = new DataSourceFactory(new DriverManagerDataSourceFactory());
         _queryAgent = new QueryAgentFactoryImpl(dataSourceFactory).getQueryAgent(unitTestEnvironment);
     }
 
@@ -58,9 +65,5 @@ public class BaseRepositoryIntegrationTest
         st = conn.createStatement();
         st.execute(sql);
         st.close();
-    }
-
-    protected String encryptForSelect(String column, String wordToEncrypt) {
-        return "crypt('" + wordToEncrypt + "', " + column + ")";
     }
 }

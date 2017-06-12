@@ -10,11 +10,11 @@ import java.util.concurrent.FutureTask;
 
 public class Memoizer<A, V> implements Computable<A, V> {
 
-    private final ConcurrentMap<A, Future<V>> _cache = new ConcurrentHashMap<>();
-    private final Computable<A, V> _computable;
+    private final ConcurrentMap<A, Future<V>> cache = new ConcurrentHashMap<>();
+    private final Computable<A, V> computable;
 
     public Memoizer(Computable<A, V> computable) {
-        _computable = computable;
+        this.computable = computable;
     }
 
     private static RuntimeException launderThrowable(Throwable throwable) {
@@ -30,20 +30,19 @@ public class Memoizer<A, V> implements Computable<A, V> {
     @Override
     public V compute(final A arg) throws InterruptedException {
         while (true) {
-            Future<V> value = _cache.get(arg);
+            Future<V> value = cache.get(arg);
             if (value == null) {
                 FutureTask<V> futureTask = createFutureTask(arg);
-                value = _cache.putIfAbsent(arg, futureTask);
+                value = cache.putIfAbsent(arg, futureTask);
                 if (value == null) {
                     value = futureTask;
                     futureTask.run();
                 }
             }
             try {
-                final V v = value.get();
-                return v;
+                return value.get();
             } catch (CancellationException e) {
-                _cache.remove(arg, value);
+                cache.remove(arg, value);
             } catch (ExecutionException e) {
                 throw launderThrowable(e);
             }
@@ -51,12 +50,7 @@ public class Memoizer<A, V> implements Computable<A, V> {
     }
 
     private FutureTask<V> createFutureTask(final A arg) {
-        Callable<V> eval = new Callable<V>() {
-            @Override
-            public V call() throws Exception {
-                return _computable.compute(arg);
-            }
-        };
+        Callable<V> eval = () -> computable.compute(arg);
         return new FutureTask<>(eval);
     }
 }

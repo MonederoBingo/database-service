@@ -17,13 +17,13 @@ public class TransactionServiceImpl extends BaseServiceImpl implements Transacti
     }
 
     @Override
-    public void beginTransaction() throws SQLException
+    public void beginTransaction() throws Exception
     {
         getQueryAgent().beginTransactionForFunctionalTest();
     }
 
     @Override
-    public void rollbackTransaction() throws SQLException
+    public void rollbackTransaction() throws Exception
     {
         getQueryAgent().rollbackTransactionForFunctionalTest();
     }

@@ -1,43 +1,41 @@
 package com.monederobingo.database.common.db.datasources;
 
-import javax.sql.DataSource;
-
-import com.monederobingo.libs.common.environments.Environment;
-import com.monederobingo.database.common.db.util.DBUtil;
 import com.monederobingo.database.common.db.util.concurrent.Computable;
 import com.monederobingo.database.common.db.util.concurrent.Memoizer;
+import com.monederobingo.libs.common.environments.Environment;
+
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataSourceFactory
 {
-    private final DBUtil dbUtil;
+    private final Computable<Environment, DataSource> dataSources;
 
     @Autowired
-    public DataSourceFactory(DBUtil dbUtil)
+    public DataSourceFactory(DriverManagerDataSourceFactory factory)
     {
-        this.dbUtil = dbUtil;
+        dataSources = new Memoizer<>(env -> getDataSource(factory, env));
     }
 
-    private final Computable<Environment, DataSource> _computable = new Computable<Environment, DataSource>() {
-        @Override
-        public DataSource compute(Environment arg) throws InterruptedException {
-            return dbUtil.createDataSource(arg);
-        }
-    };
+    private DataSource getDataSource(DriverManagerDataSourceFactory factory, Environment environment)
+    {
+        DriverManagerDataSource dataSource = factory.createDriverManagerDataSource();
+        dataSource.setDriverClassName(environment.getDatabaseDriverClass());
+        dataSource.setUrl(environment.getDatabasePath());
+        dataSource.setUsername(environment.getDatabaseUsername());
+        dataSource.setPassword(environment.getDatabasePassword());
+        return dataSource;
+    }
 
-    private final Computable<Environment, DataSource> _dataSources = new Memoizer<>(_computable);
-
-    public DataSource getDataSource(Environment environment) {
-        try {
-            final DataSource dataSource = _dataSources.compute(environment);
-            if (dataSource == null) {
-                throw new RuntimeException("DataSource cannot be null!");
-            }
-            return dataSource;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public DataSource getDataSource(Environment environment) throws InterruptedException
+    {
+        final DataSource dataSource = dataSources.compute(environment);
+        if (dataSource == null)
+            throw new RuntimeException("DataSource cannot be null!");
+        return dataSource;
     }
 }

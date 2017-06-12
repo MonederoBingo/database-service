@@ -103,7 +103,7 @@ public class DatabaseServiceImpl implements DatabaseService
         return new ServiceResult<>(true, "", object);
     }
 
-    private QueryAgent getQueryAgent()
+    private QueryAgent getQueryAgent() throws InterruptedException
     {
         return queryAgentFactory.getQueryAgent(threadContextService.getEnvironment());
     }

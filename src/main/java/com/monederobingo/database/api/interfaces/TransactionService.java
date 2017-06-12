@@ -1,10 +1,8 @@
 package com.monederobingo.database.api.interfaces;
 
-import java.sql.SQLException;
-
 public interface TransactionService
 {
-    void beginTransaction() throws SQLException;
+    void beginTransaction() throws Exception;
 
-    void rollbackTransaction() throws SQLException;
+    void rollbackTransaction() throws Exception;
 }
