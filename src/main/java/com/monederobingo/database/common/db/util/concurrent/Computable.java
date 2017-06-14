@@ -1,5 +1,6 @@
 package com.monederobingo.database.common.db.util.concurrent;
 
-public interface Computable<A, V> {
+public interface Computable<A, V>
+{
     V compute(A arg) throws InterruptedException;
 }

@@ -17,16 +17,6 @@ public class Memoizer<A, V> implements Computable<A, V> {
         this.computable = computable;
     }
 
-    private static RuntimeException launderThrowable(Throwable throwable) {
-        if (throwable instanceof RuntimeException) {
-            return (RuntimeException) throwable;
-        } else if (throwable instanceof Error) {
-            throw (Error) throwable;
-        } else {
-            throw new IllegalArgumentException("Not unchecked", throwable);
-        }
-    }
-
     @Override
     public V compute(final A arg) throws InterruptedException {
         while (true) {
@@ -49,7 +39,17 @@ public class Memoizer<A, V> implements Computable<A, V> {
         }
     }
 
-    private FutureTask<V> createFutureTask(final A arg) {
+    private static RuntimeException launderThrowable(Throwable throwable) {
+        if (throwable instanceof RuntimeException) {
+            return (RuntimeException) throwable;
+        } else if (throwable instanceof Error) {
+            throw (Error) throwable;
+        } else {
+            throw new IllegalArgumentException("Error when getting object from memoizer", throwable);
+        }
+    }
+
+    FutureTask<V> createFutureTask(final A arg) {
         Callable<V> eval = () -> computable.compute(arg);
         return new FutureTask<>(eval);
     }

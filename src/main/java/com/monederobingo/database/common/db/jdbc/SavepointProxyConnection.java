@@ -3,7 +3,8 @@ package com.monederobingo.database.common.db.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface SavepointProxyConnection extends Connection {
+public interface SavepointProxyConnection extends Connection
+{
     boolean isClosed() throws SQLException;
 
     boolean isProxyConnectionActive();

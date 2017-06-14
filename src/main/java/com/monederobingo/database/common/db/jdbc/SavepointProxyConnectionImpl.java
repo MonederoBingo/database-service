@@ -22,14 +22,13 @@ import java.util.concurrent.Executor;
 
 public class SavepointProxyConnectionImpl implements SavepointProxyConnection
 {
-
     private final Connection _wrappedConnection;
     private final SavepointPgProxyDriver _driver;
     private boolean _isProxyConnectionActive = false;
     private String _connectionUrl;
     private Savepoint _lastSavepoint;
 
-    public SavepointProxyConnectionImpl(Connection wrappedConnection, SavepointPgProxyDriver savepointPgProxyDriver)
+    SavepointProxyConnectionImpl(Connection wrappedConnection, SavepointPgProxyDriver savepointPgProxyDriver)
     {
         _wrappedConnection = wrappedConnection;
         _driver = savepointPgProxyDriver;
