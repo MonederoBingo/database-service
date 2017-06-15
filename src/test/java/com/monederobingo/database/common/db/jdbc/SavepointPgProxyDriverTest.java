@@ -44,40 +44,40 @@ public class SavepointPgProxyDriverTest
     @Test
     public void shouldNotAcceptNullURL()
     {
-        // when
+        //when
         boolean result = savepointPgProxyDriver.acceptsURL(null);
 
-        // then
+        //then
         assertFalse(result);
     }
 
     @Test
     public void shouldNotAcceptEmptyURL()
     {
-        // when
+        //when
         boolean result = savepointPgProxyDriver.acceptsURL("");
 
-        // then
+        //then
         assertFalse(result);
     }
 
     @Test
     public void shouldNotAcceptNotValidURL()
     {
-        // when
+        //when
         boolean result = savepointPgProxyDriver.acceptsURL("jdbc:postgresql://localhost:5432/lealpoint");
 
-        // then
+        //then
         assertFalse(result);
     }
 
     @Test
     public void shouldAcceptValidURL()
     {
-        // when
+        //when
         SavepointPgProxyDriver driver = new SavepointPgProxyDriver();
 
-        // then
+        //then
         boolean result = driver.acceptsURL("jdbc:savepointpgproxy://localhost:5432/lealpoint");
 
         assertTrue(result);
@@ -86,116 +86,116 @@ public class SavepointPgProxyDriverTest
     @Test
     public void shouldReturnNonNullConnection() throws SQLException
     {
-        // when
+        //when
         Connection connect = savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertNotNull(connect);
     }
 
     @Test
     public void shouldReturnSavepointProxyConnection() throws SQLException
     {
-        // when
+        //when
         Connection connection = savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertTrue(connection instanceof SavepointProxyConnection);
     }
 
     @Test
     public void shouldReturnOriginalConnectionURL() throws SQLException
     {
-        // when
+        //when
         SavepointProxyConnection connection = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertEquals("jdbc:postgresql://localhost:5432/lealpoint", connection.getConnectionUrl());
     }
 
     @Test
     public void shouldThrowExceptionWhenUsingOriginalURL() throws SQLException
     {
-        // then
+        //then
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("Could not connect to wrapped driver (PostgreSQL JDBC Driver). "
                 + "url = jdbc:postgresql://localhost:5432/lealpoint");
 
-        // when
+        //when
         savepointPgProxyDriver.connect("jdbc:postgresql://localhost:5432/lealpoint", new Properties());
     }
 
     @Test
     public void shouldReturnSameConnectionForSameURLWhenInTransaction() throws SQLException
     {
-        // given
+        //given
         SavepointProxyConnection connection1 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
         connection1.beginTransactionForAutomationTest();
 
-        // when
+        //when
         SavepointProxyConnection connection2 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertEquals(connection1, connection2);
     }
 
     @Test
     public void shouldNotReturnSameConnectionForSameURLWhenNotInTransaction() throws SQLException
     {
-        // given
+        //given
         SavepointProxyConnection connection1 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // when
+        //when
         SavepointProxyConnection connection2 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertNotEquals(connection1, connection2);
     }
 
     @Test
     public void shouldReturnDifferentConnectionForSameURLWhenInTransactionButWrappedConnectionIsClosed() throws SQLException
     {
-        // given
+        //given
         SavepointProxyConnection connection1 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
         connection1.beginTransactionForAutomationTest();
         given(connection.isClosed()).willReturn(true);
 
-        // when
+        //when
         SavepointProxyConnection connection2 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertNotEquals(connection1, connection2);
     }
 
     @Test
     public void shouldReturnDifferentConnectionForSameURLWhenInTransactionButConnectionIsClosed() throws SQLException
     {
-        // given
+        //given
         SavepointProxyConnection connection1 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
         connection1.beginTransactionForAutomationTest();
         connection1.rollbackTransactionForAutomationTest();
         connection1.close();
 
-        // when
+        //when
         SavepointProxyConnection connection2 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         assertNotEquals(connection1, connection2);
     }
 
     @Test
     public void shouldCloseRollBackedTransactionAndReturnNewOne() throws SQLException
     {
-        // given
+        //given
         SavepointProxyConnection connection1 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
         connection1.beginTransactionForAutomationTest();
@@ -204,11 +204,11 @@ public class SavepointPgProxyDriverTest
         given(connection.getAutoCommit()).willReturn(true);
         savepointPgProxyDriver.setProxyConnectionActive(true);
 
-        // when
+        //when
         SavepointProxyConnection connection2 = (SavepointProxyConnection)
                 savepointPgProxyDriver.connect("jdbc:savepointpgproxy://localhost:5432/lealpoint", new Properties());
 
-        // then
+        //then
         verify(connection).close();
         assertNotEquals(connection1, connection2);
     }
