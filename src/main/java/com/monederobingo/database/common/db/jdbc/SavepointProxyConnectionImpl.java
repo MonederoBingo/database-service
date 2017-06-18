@@ -124,22 +124,9 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     @Override
     public synchronized void close() throws SQLException
     {
-        if (isClosed())
+        if (!isClosed() && !isProxyConnectionActive())
         {
-            StringBuilder closedConnectionMessage = new StringBuilder(
-                    String.format("Attempt of close. Connection is already closed. Autocommit is %s.", _wrappedConnection.getAutoCommit()));
-            if (isProxyConnectionActive())
-            {
-                closedConnectionMessage.append(" And SavepointProxyConnection is still active.");
-            }
-            closedConnectionMessage.append(String.format(" On %s", _connectionUrl));
-        }
-        else
-        {
-            if (!isProxyConnectionActive())
-            {
-                _wrappedConnection.close();
-            }
+            _wrappedConnection.close();
         }
     }
 
