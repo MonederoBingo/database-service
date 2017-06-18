@@ -4,9 +4,11 @@ import static java.sql.Connection.TRANSACTION_NONE;
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
 import static java.sql.ResultSet.HOLD_CURSORS_OVER_COMMIT;
 import static java.sql.ResultSet.TYPE_FORWARD_ONLY;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -15,7 +17,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Properties;
@@ -599,10 +600,10 @@ public class SavepointProxyConnectionImplTest
     public void shouldCallPrepareStatementWithTwoParametersOnWrappedConnection() throws SQLException
     {
         //when
-        savepointProxyConnection.prepareStatement("SELECT * FROM dummy;", TYPE_FORWARD_ONLY);
+        savepointProxyConnection.prepareStatement("SELECT * FROM dummy;", RETURN_GENERATED_KEYS);
 
         //then
-        verify(wrappedConnection).prepareStatement("SELECT * FROM dummy;", TYPE_FORWARD_ONLY);
+        verify(wrappedConnection).prepareStatement("SELECT * FROM dummy;", RETURN_GENERATED_KEYS);
     }
 
     @Test
@@ -803,5 +804,174 @@ public class SavepointProxyConnectionImplTest
 
         //then
         assertFalse(value);
+    }
+
+    @Test
+    public void shouldReturnFalseIfTransactionIsNotOpen()
+    {
+        //when
+        boolean proxyConnectionActive = savepointProxyConnection.isProxyConnectionActive();
+
+        //then
+        assertFalse(proxyConnectionActive);
+    }
+
+    @Test
+    public void shouldReturnTrueIfTransactionIsOpen() throws SQLException
+    {
+        //given
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //when
+        boolean proxyConnectionActive = savepointProxyConnection.isProxyConnectionActive();
+
+        //then
+        assertTrue(proxyConnectionActive);
+    }
+
+    @Test
+    public void shouldReturnFalseIfTransactionIsRollbacked() throws SQLException
+    {
+        //given
+        savepointProxyConnection.beginTransactionForAutomationTest();
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //when
+        boolean proxyConnectionActive = savepointProxyConnection.isProxyConnectionActive();
+
+        //then
+        assertFalse(proxyConnectionActive);
+    }
+
+    @Test
+    public void shouldSetAutoCommitToFalseOnWrappedConnectionWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection).setAutoCommit(false);
+    }
+
+    @Test
+    public void shouldNotSetAutoCommitToFalseTwiceOnWrappedConnectionWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection, times(1)).setAutoCommit(false);
+    }
+
+    @Test
+    public void shouldSetSavepointOnWrappedConnectionWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection).setSavepoint(anyString());
+    }
+
+    @Test
+    public void shouldNotSetSavePointTwiceOnWrappedConnectionWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection, times(1)).setSavepoint(anyString());
+    }
+
+    @Test
+    public void shouldSetProxyConnectionActiveOnDriverWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(driver).setProxyConnectionActive(true);
+    }
+
+    @Test
+    public void shouldNotSetProxyConnectionTwiceActiveOnDriverWhenBeginTransaction() throws SQLException
+    {
+        //when
+        savepointProxyConnection.beginTransactionForAutomationTest();
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //then
+        verify(driver, times(1)).setProxyConnectionActive(true);
+    }
+
+    @Test
+    public void shouldNotRollbackOnWrappedConnectionWhenRollingBackTransactionOnNotActiveProxyConnection() throws SQLException
+    {
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection, never()).rollback();
+    }
+
+    @Test
+    public void shouldRollbackOnWrappedConnectionWhenRollingBackTransaction() throws SQLException
+    {
+        //given
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection).rollback();
+    }
+
+    @Test
+    public void shouldNotSetAutoCommitOnWrappedConnectionWhenRollingBackTransactionOnNotActiveProxyConnection() throws SQLException
+    {
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection, never()).setAutoCommit(true);
+    }
+
+    @Test
+    public void shouldSetAutoCommitOnWrappedConnectionWhenRollingBackTransaction() throws SQLException
+    {
+        //given
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(wrappedConnection).setAutoCommit(true);
+    }
+
+    @Test
+    public void shouldNotSetProxyConnectionOnDriverWhenRollingBackTransactionOnNotActiveProxyConnection() throws SQLException
+    {
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(driver, never()).setProxyConnectionActive(false);
+    }
+
+    @Test
+    public void shouldSetProxyConnectionOnDriverWhenRollingBackTransaction() throws SQLException
+    {
+        //given
+        savepointProxyConnection.beginTransactionForAutomationTest();
+
+        //when
+        savepointProxyConnection.rollbackTransactionForAutomationTest();
+
+        //then
+        verify(driver).setProxyConnectionActive(false);
     }
 }

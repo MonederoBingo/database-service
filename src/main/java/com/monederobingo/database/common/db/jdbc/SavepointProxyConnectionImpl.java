@@ -22,46 +22,46 @@ import java.util.concurrent.Executor;
 
 public class SavepointProxyConnectionImpl implements SavepointProxyConnection
 {
-    private final Connection _wrappedConnection;
-    private final SavepointPgProxyDriver _driver;
-    private boolean _isProxyConnectionActive = false;
-    private String _connectionUrl;
+    private final Connection wrappedConnection;
+    private final SavepointPgProxyDriver driver;
+    private boolean isProxyConnectionActive = false;
+    private String connectionUrl;
     private Savepoint _lastSavepoint;
 
     SavepointProxyConnectionImpl(Connection wrappedConnection, SavepointPgProxyDriver savepointPgProxyDriver)
     {
-        _wrappedConnection = wrappedConnection;
-        _driver = savepointPgProxyDriver;
+        this.wrappedConnection = wrappedConnection;
+        driver = savepointPgProxyDriver;
     }
 
     @Override
     public Statement createStatement() throws SQLException
     {
-        return _wrappedConnection.createStatement();
+        return wrappedConnection.createStatement();
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql);
+        return wrappedConnection.prepareStatement(sql);
     }
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException
     {
-        return _wrappedConnection.prepareCall(sql);
+        return wrappedConnection.prepareCall(sql);
     }
 
     @Override
     public String nativeSQL(String sql) throws SQLException
     {
-        return _wrappedConnection.nativeSQL(sql);
+        return wrappedConnection.nativeSQL(sql);
     }
 
     @Override
     public synchronized boolean getAutoCommit() throws SQLException
     {
-        return !isProxyConnectionActive() && _wrappedConnection.getAutoCommit();
+        return !isProxyConnectionActive() && wrappedConnection.getAutoCommit();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
             {
                 if (getAutoCommit() != autoCommit)
                 {
-                    _wrappedConnection.setAutoCommit(autoCommit);
+                    wrappedConnection.setAutoCommit(autoCommit);
                 }
             }
         }
@@ -97,7 +97,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
         }
         else
         {
-            _wrappedConnection.commit();
+            wrappedConnection.commit();
         }
     }
 
@@ -115,7 +115,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
             {
                 if (!getAutoCommit())
                 {
-                    _wrappedConnection.rollback();
+                    wrappedConnection.rollback();
                 }
             }
         }
@@ -126,110 +126,110 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     {
         if (!isClosed() && !isProxyConnectionActive())
         {
-            _wrappedConnection.close();
+            wrappedConnection.close();
         }
     }
 
     @Override
     public synchronized boolean isClosed() throws SQLException
     {
-        return _wrappedConnection.isClosed();
+        return wrappedConnection.isClosed();
     }
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException
     {
-        return _wrappedConnection.getMetaData();
+        return wrappedConnection.getMetaData();
     }
 
     @Override
     public boolean isReadOnly() throws SQLException
     {
-        return _wrappedConnection.isReadOnly();
+        return wrappedConnection.isReadOnly();
     }
 
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException
     {
-        _wrappedConnection.setReadOnly(readOnly);
+        wrappedConnection.setReadOnly(readOnly);
     }
 
     @Override
     public String getCatalog() throws SQLException
     {
-        return _wrappedConnection.getCatalog();
+        return wrappedConnection.getCatalog();
     }
 
     @Override
     public void setCatalog(String catalog) throws SQLException
     {
-        _wrappedConnection.setCatalog(catalog);
+        wrappedConnection.setCatalog(catalog);
     }
 
     @Override
     public int getTransactionIsolation() throws SQLException
     {
-        return _wrappedConnection.getTransactionIsolation();
+        return wrappedConnection.getTransactionIsolation();
     }
 
     @Override
     public void setTransactionIsolation(int level) throws SQLException
     {
-        _wrappedConnection.setTransactionIsolation(level);
+        wrappedConnection.setTransactionIsolation(level);
     }
 
     @Override
     public SQLWarning getWarnings() throws SQLException
     {
-        return _wrappedConnection.getWarnings();
+        return wrappedConnection.getWarnings();
     }
 
     @Override
     public void clearWarnings() throws SQLException
     {
-        _wrappedConnection.clearWarnings();
+        wrappedConnection.clearWarnings();
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        return _wrappedConnection.createStatement(resultSetType, resultSetConcurrency);
+        return wrappedConnection.createStatement(resultSetType, resultSetConcurrency);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql, resultSetType, resultSetConcurrency);
+        return wrappedConnection.prepareStatement(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        return _wrappedConnection.prepareCall(sql, resultSetType, resultSetConcurrency);
+        return wrappedConnection.prepareCall(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
     public Map<String, Class< ? >> getTypeMap() throws SQLException
     {
-        return _wrappedConnection.getTypeMap();
+        return wrappedConnection.getTypeMap();
     }
 
     @Override
     public void setTypeMap(Map<String, Class< ? >> map) throws SQLException
     {
-        _wrappedConnection.setTypeMap(map);
+        wrappedConnection.setTypeMap(map);
     }
 
     @Override
     public int getHoldability() throws SQLException
     {
-        return _wrappedConnection.getHoldability();
+        return wrappedConnection.getHoldability();
     }
 
     @Override
     public void setHoldability(int holdability) throws SQLException
     {
-        _wrappedConnection.setHoldability(holdability);
+        wrappedConnection.setHoldability(holdability);
     }
 
     @Override
@@ -241,151 +241,151 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     @Override
     public Savepoint setSavepoint(String name) throws SQLException
     {
-        return _wrappedConnection.setSavepoint(name);
+        return wrappedConnection.setSavepoint(name);
     }
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException
     {
-        _wrappedConnection.rollback(savepoint);
+        wrappedConnection.rollback(savepoint);
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException
     {
-        _wrappedConnection.releaseSavepoint(savepoint);
+        wrappedConnection.releaseSavepoint(savepoint);
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        return _wrappedConnection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+        return wrappedConnection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+        return wrappedConnection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        return _wrappedConnection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+        return wrappedConnection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql, autoGeneratedKeys);
+        return wrappedConnection.prepareStatement(sql, autoGeneratedKeys);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql, columnIndexes);
+        return wrappedConnection.prepareStatement(sql, columnIndexes);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException
     {
-        return _wrappedConnection.prepareStatement(sql, columnNames);
+        return wrappedConnection.prepareStatement(sql, columnNames);
     }
 
     @Override
     public Clob createClob() throws SQLException
     {
-        return _wrappedConnection.createClob();
+        return wrappedConnection.createClob();
     }
 
     @Override
     public Blob createBlob() throws SQLException
     {
-        return _wrappedConnection.createBlob();
+        return wrappedConnection.createBlob();
     }
 
     @Override
     public NClob createNClob() throws SQLException
     {
-        return _wrappedConnection.createNClob();
+        return wrappedConnection.createNClob();
     }
 
     @Override
     public SQLXML createSQLXML() throws SQLException
     {
-        return _wrappedConnection.createSQLXML();
+        return wrappedConnection.createSQLXML();
     }
 
     @Override
     public boolean isValid(int timeout) throws SQLException
     {
-        return _wrappedConnection.isValid(timeout);
+        return wrappedConnection.isValid(timeout);
     }
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException
     {
-        _wrappedConnection.setClientInfo(name, value);
+        wrappedConnection.setClientInfo(name, value);
     }
 
     @Override
     public String getClientInfo(String name) throws SQLException
     {
-        return _wrappedConnection.getClientInfo(name);
+        return wrappedConnection.getClientInfo(name);
     }
 
     @Override
     public Properties getClientInfo() throws SQLException
     {
-        return _wrappedConnection.getClientInfo();
+        return wrappedConnection.getClientInfo();
     }
 
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException
     {
-        _wrappedConnection.setClientInfo(properties);
+        wrappedConnection.setClientInfo(properties);
     }
 
     @Override
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException
     {
-        return _wrappedConnection.createArrayOf(typeName, elements);
+        return wrappedConnection.createArrayOf(typeName, elements);
     }
 
     @Override
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException
     {
-        return _wrappedConnection.createStruct(typeName, attributes);
+        return wrappedConnection.createStruct(typeName, attributes);
     }
 
     @Override
     public String getSchema() throws SQLException
     {
-        return _wrappedConnection.getSchema();
+        return wrappedConnection.getSchema();
     }
 
     @Override
     public void setSchema(String schema) throws SQLException
     {
-        _wrappedConnection.setSchema(schema);
+        wrappedConnection.setSchema(schema);
     }
 
     @Override
     public void abort(Executor executor) throws SQLException
     {
-        _wrappedConnection.abort(executor);
+        wrappedConnection.abort(executor);
     }
 
     @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
     {
-        _wrappedConnection.setNetworkTimeout(executor, milliseconds);
+        wrappedConnection.setNetworkTimeout(executor, milliseconds);
     }
 
     @Override
     public int getNetworkTimeout() throws SQLException
     {
-        return _wrappedConnection.getNetworkTimeout();
+        return wrappedConnection.getNetworkTimeout();
     }
 
     @Override
@@ -403,14 +403,14 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     @Override
     public synchronized boolean isProxyConnectionActive()
     {
-        return _isProxyConnectionActive;
+        return isProxyConnectionActive;
     }
 
     // Attribute should not be modified directly but through public methods beginTransactionForAutomationTest or rollbackTransactionForAutomationTest
     private synchronized void setProxyConnectionActive(boolean isProxyConnectionActive)
     {
-        _isProxyConnectionActive = isProxyConnectionActive;
-        _driver.setProxyConnectionActive(isProxyConnectionActive);
+        this.isProxyConnectionActive = isProxyConnectionActive;
+        driver.setProxyConnectionActive(isProxyConnectionActive);
     }
 
     private Savepoint getLastSavepoint()
@@ -426,7 +426,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     private synchronized void setNewSavepoint() throws SQLException
     {
         String savepointName = UUID.randomUUID().toString();
-        Savepoint savepoint = _wrappedConnection.setSavepoint(savepointName);
+        Savepoint savepoint = wrappedConnection.setSavepoint(savepointName);
         setLastSavepoint(savepoint);
     }
 
@@ -435,7 +435,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     {
         if (!isProxyConnectionActive())
         {
-            _wrappedConnection.setAutoCommit(false);
+            wrappedConnection.setAutoCommit(false);
             setNewSavepoint();
             setProxyConnectionActive(true);
         }
@@ -446,8 +446,8 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     {
         if (isProxyConnectionActive())
         {
-            _wrappedConnection.rollback();
-            _wrappedConnection.setAutoCommit(true);
+            wrappedConnection.rollback();
+            wrappedConnection.setAutoCommit(true);
             setProxyConnectionActive(false);
         }
     }
@@ -457,7 +457,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
         Savepoint lastSavepoint = getLastSavepoint();
         if (lastSavepoint != null)
         {
-            _wrappedConnection.releaseSavepoint(lastSavepoint);
+            wrappedConnection.releaseSavepoint(lastSavepoint);
             setLastSavepoint(null);
         }
     }
@@ -467,7 +467,7 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
         Savepoint lastSavepoint = getLastSavepoint();
         if (lastSavepoint != null)
         {
-            _wrappedConnection.rollback(lastSavepoint);
+            wrappedConnection.rollback(lastSavepoint);
             setLastSavepoint(null);
         }
     }
@@ -475,12 +475,12 @@ public class SavepointProxyConnectionImpl implements SavepointProxyConnection
     @Override
     public String getConnectionUrl()
     {
-        return _connectionUrl;
+        return connectionUrl;
     }
 
     @Override
     public void setConnectionUrl(String connectionUrl)
     {
-        _connectionUrl = connectionUrl;
+        this.connectionUrl = connectionUrl;
     }
 }
