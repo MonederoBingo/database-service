@@ -7,7 +7,7 @@ import com.monederobingo.libs.common.environments.Environment;
 import com.monederobingo.libs.common.environments.FunctionalTestEnvironment;
 import com.monederobingo.libs.common.environments.ProdEnvironment;
 import com.monederobingo.libs.common.environments.UATEnvironment;
-import com.monederobingo.database.common.db.queryagent.QueryAgent;
+import com.monederobingo.database.common.db.queryagent.DataBaseAdapter;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 
 public class BaseServiceImpl
@@ -57,7 +57,7 @@ public class BaseServiceImpl
         return _threadContextService.getThreadContext();
     }
 
-    QueryAgent getQueryAgent() throws InterruptedException
+    DataBaseAdapter getQueryAgent() throws InterruptedException
     {
         return queryAgentFactory.getQueryAgent(_threadContextService.getEnvironment());
     }

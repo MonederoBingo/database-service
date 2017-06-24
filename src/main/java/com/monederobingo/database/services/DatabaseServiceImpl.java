@@ -2,7 +2,7 @@ package com.monederobingo.database.services;
 
 import com.monederobingo.libs.common.context.ThreadContextService;
 import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.common.db.queryagent.QueryAgent;
+import com.monederobingo.database.common.db.queryagent.DataBaseAdapter;
 import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
 import com.monederobingo.database.common.db.util.DbBuilder;
 import com.monederobingo.database.model.InsertQuery;
@@ -103,7 +103,7 @@ public class DatabaseServiceImpl implements DatabaseService
         return new ServiceResult<>(true, "", object);
     }
 
-    private QueryAgent getQueryAgent() throws InterruptedException
+    private DataBaseAdapter getQueryAgent() throws InterruptedException
     {
         return queryAgentFactory.getQueryAgent(threadContextService.getEnvironment());
     }

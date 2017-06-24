@@ -13,16 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 
-public class QueryAgent
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+
+public class DataBaseAdapter
 {
 
-    private final transient DataSource _dataSource;
-    private transient Connection _connection = null;
+    private final transient DataSource dataSource;
+    private transient Connection connection = null;
     private boolean _isInTransaction;
 
-    QueryAgent(DataSource dataSource)
+    DataBaseAdapter(DataSource dataSource)
     {
-        _dataSource = dataSource;
+        this.dataSource = dataSource;
     }
 
     /**
@@ -30,20 +32,13 @@ public class QueryAgent
      *
      * @return The established connection.
      */
-    Connection getConnection()
+    Connection getConnection() throws SQLException
     {
-        if (_connection == null)
+        if (connection == null)
         {
-            try
-            {
-                _connection = _dataSource.getConnection();
-            }
-            catch (SQLException e)
-            {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            connection = dataSource.getConnection();
         }
-        return _connection;
+        return connection;
     }
 
     /**
@@ -58,7 +53,7 @@ public class QueryAgent
         Connection connection = getConnection();
         try (Statement statement = connection.createStatement())
         {
-            statement.execute(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.execute(sql, RETURN_GENERATED_KEYS);
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
             return resultSet.getLong(id);
@@ -153,7 +148,7 @@ public class QueryAgent
 
     synchronized void rollbackTransaction() throws Exception
     {
-        if (_connection != null)
+        if (connection != null)
         {
             try
             {
@@ -173,19 +168,12 @@ public class QueryAgent
         return _isInTransaction;
     }
 
-    private synchronized void releaseConnectionIfPossible()
+    private synchronized void releaseConnectionIfPossible() throws SQLException
     {
-        if (!isInTransaction() && _connection != null)
+        if (!isInTransaction() && connection != null)
         {
-            try
-            {
-                _connection.close();
-            }
-            catch (SQLException e)
-            {
-                throw new RuntimeException("Error releasing connection");
-            }
-            _connection = null;
+            connection.close();
+            connection = null;
         }
     }
 
@@ -236,10 +224,10 @@ public class QueryAgent
     @Override
     protected void finalize() throws Throwable
     {
-        if (_connection != null)
+        if (connection != null)
         {
-            _connection.close();
-            _connection = null;
+            connection.close();
+            connection = null;
         }
         super.finalize();
     }
@@ -248,13 +236,13 @@ public class QueryAgent
     {
         SavepointProxyConnection connection = (SavepointProxyConnection) getConnection();
         connection.beginTransactionForAutomationTest();
-        _connection = connection;
+        this.connection = connection;
     }
 
     public synchronized void rollbackTransactionForFunctionalTest() throws SQLException
     {
         SavepointProxyConnection connection = (SavepointProxyConnection) getConnection();
         connection.rollbackTransactionForAutomationTest();
-        _connection = null;
+        this.connection = null;
     }
 }

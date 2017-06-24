@@ -13,7 +13,7 @@ import org.junit.Before;
 public class BaseRepositoryIntegrationTest
 {
 
-    private static QueryAgent _queryAgent;
+    private static DataBaseAdapter _queryAgent;
 
     static {
         try
@@ -49,7 +49,7 @@ public class BaseRepositoryIntegrationTest
         _queryAgent.rollbackTransaction();
     }
 
-    QueryAgent getQueryAgent() {
+    DataBaseAdapter getQueryAgent() {
         return _queryAgent;
     }
 
