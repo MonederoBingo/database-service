@@ -1,5 +1,6 @@
 package com.monederobingo.database.common.db.queryagent;
 
+import com.monederobingo.database.common.db.util.DbBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,11 +10,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.sql.DataSource;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,6 +34,10 @@ public class DataBaseAdapterTest
     private Statement statement;
     @Mock
     private ResultSet resultSet;
+    @Mock
+    private DbBuilder<String> builder;
+    @Mock
+    private PreparedStatement preparedStatement;
 
     @Before
     public void setUp() throws Exception
@@ -39,6 +46,8 @@ public class DataBaseAdapterTest
         given(dataSource.getConnection()).willReturn(connection);
         given(connection.createStatement()).willReturn(statement);
         given(statement.getGeneratedKeys()).willReturn(resultSet);
+        given(connection.prepareStatement(any())).willReturn(preparedStatement);
+        given(preparedStatement.executeQuery()).willReturn(resultSet);
     }
 
     @Test
@@ -143,5 +152,31 @@ public class DataBaseAdapterTest
 
         //then
         verify(connection).close();
+    }
+
+    @Test
+    public void selectListShouldCallPrepareStatementOnConnection() throws Exception
+    {
+        //given
+        given(builder.sql()).willReturn("query");
+
+        //when
+        databaseAdapter.selectList(builder);
+
+        //then
+        verify(connection).prepareStatement("query");
+    }
+
+    @Test
+    public void selectListShouldExecuteQueryOnPreparedStatement() throws Exception
+    {
+        //given
+        given(builder.sql()).willReturn("query");
+
+        //when
+        databaseAdapter.selectList(builder);
+
+        //then
+        verify(connection).prepareStatement("query");
     }
 }
