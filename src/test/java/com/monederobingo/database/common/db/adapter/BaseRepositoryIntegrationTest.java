@@ -1,4 +1,4 @@
-package com.monederobingo.database.common.db.queryagent;
+package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.database.common.db.datasources.DataSourceFactory;
 import com.monederobingo.database.common.db.datasources.DriverManagerDataSourceFactory;
@@ -36,7 +36,7 @@ public class BaseRepositoryIntegrationTest
 
         UnitTestEnvironment unitTestEnvironment = new UnitTestEnvironment(dbDriver, dbDriverClass, dbUrl, dbUser, dbPassword);
         DataSourceFactory dataSourceFactory = new DataSourceFactory(new DriverManagerDataSourceFactory());
-        _queryAgent = new QueryAgentFactoryImpl(dataSourceFactory).getQueryAgent(unitTestEnvironment);
+        _queryAgent = new DatabaseAdapterFactoryImpl(dataSourceFactory).getQueryAgent(unitTestEnvironment);
     }
 
     @Before

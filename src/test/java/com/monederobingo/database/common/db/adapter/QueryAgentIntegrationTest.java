@@ -1,4 +1,4 @@
-package com.monederobingo.database.common.db.queryagent;
+package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.database.common.db.util.DbBuilder;
 import org.junit.Before;

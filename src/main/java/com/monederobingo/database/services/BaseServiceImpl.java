@@ -7,16 +7,16 @@ import com.monederobingo.libs.common.environments.Environment;
 import com.monederobingo.libs.common.environments.FunctionalTestEnvironment;
 import com.monederobingo.libs.common.environments.ProdEnvironment;
 import com.monederobingo.libs.common.environments.UATEnvironment;
-import com.monederobingo.database.common.db.queryagent.DataBaseAdapter;
-import com.monederobingo.database.common.db.queryagent.QueryAgentFactory;
+import com.monederobingo.database.common.db.adapter.DataBaseAdapter;
+import com.monederobingo.database.common.db.adapter.DatabaseAdapterFactory;
 
 public class BaseServiceImpl
 {
 
     private final ThreadContextService _threadContextService;
-    private final QueryAgentFactory queryAgentFactory;
+    private final DatabaseAdapterFactory queryAgentFactory;
 
-    public BaseServiceImpl(ThreadContextService threadContextService, QueryAgentFactory queryAgentFactory)
+    public BaseServiceImpl(ThreadContextService threadContextService, DatabaseAdapterFactory queryAgentFactory)
     {
         _threadContextService = threadContextService;
         this.queryAgentFactory = queryAgentFactory;

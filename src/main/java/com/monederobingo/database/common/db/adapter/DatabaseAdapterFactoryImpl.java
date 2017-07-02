@@ -1,4 +1,4 @@
-package com.monederobingo.database.common.db.queryagent;
+package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.libs.common.environments.Environment;
 import com.monederobingo.database.common.db.datasources.DataSourceFactory;
@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QueryAgentFactoryImpl implements QueryAgentFactory {
+public class DatabaseAdapterFactoryImpl implements DatabaseAdapterFactory
+{
 
     private final DataSourceFactory _dataSourceFactory;
 
     @Autowired
-    public QueryAgentFactoryImpl(DataSourceFactory dataSourceFactory) {
+    public DatabaseAdapterFactoryImpl(DataSourceFactory dataSourceFactory) {
         _dataSourceFactory = dataSourceFactory;
     }
 
