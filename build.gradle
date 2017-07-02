@@ -1,3 +1,6 @@
+import org.flywaydb.gradle.FlywayExtension
+import org.flywaydb.gradle.task.FlywayMigrateTask
+
 buildscript {
 	ext {
 		springBootVersion = '1.5.3.RELEASE'
@@ -8,6 +11,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'org.flywaydb:flyway-gradle-plugin:4.2.0'
 	}
 }
 
@@ -19,6 +23,7 @@ configurations {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'org.flywaydb.flyway'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -62,3 +67,33 @@ jar {
 test {
 	exclude '**/*IntegrationTest*'
 }
+
+task migrateMonedero(type: FlywayMigrateTask) {
+	extension = new FlywayExtension()
+	extension.schemas = ["monedero"]
+	extension.url = 'jdbc:postgresql://localhost:5432'
+	extension.user = 'postgres'
+	extension.password = 'root'
+	extension.locations = ["filesystem:${projectDir}/migrations/common",
+				 "filesystem:${projectDir}/migrations/postgresql"]
+	extension.sqlMigrationPrefix = ""
+	extension.baselineOnMigrate = true
+	extension.outOfOrder = true
+}
+
+task migrateMonederoTest(type: FlywayMigrateTask) {
+	extension = new FlywayExtension()
+	extension.schemas = ["monedero_test"]
+	extension.url = 'jdbc:postgresql://localhost:5432'
+	extension.user = 'postgres'
+	extension.password = 'root'
+	extension.locations = ["filesystem:${projectDir}/migrations/common",
+						   "filesystem:${projectDir}/migrations/postgresql"]
+	extension.sqlMigrationPrefix = ""
+	extension.baselineOnMigrate = true
+	extension.outOfOrder = true
+}
+
+task migrate
+migrate.dependsOn migrateMonedero
+migrate.dependsOn migrateMonederoTest
