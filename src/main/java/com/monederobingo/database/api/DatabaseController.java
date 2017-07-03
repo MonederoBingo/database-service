@@ -1,5 +1,6 @@
 package com.monederobingo.database.api;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -36,6 +37,10 @@ public class DatabaseController
     {
         try
         {
+            if(invalidParams(query))
+            {
+                return new ResponseEntity<>(new ServiceResult<>(false, "query.must.not.be.null"), BAD_REQUEST);
+            }
             return new ResponseEntity<>(databaseService.select(query), OK);
         }
         catch (Exception e)
@@ -43,6 +48,12 @@ public class DatabaseController
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private boolean invalidParams(SelectQuery query)
+    {
+        return query == null ||
+                query.getQuery() == null;
     }
 
     @RequestMapping(method = POST, value = "/selectList")

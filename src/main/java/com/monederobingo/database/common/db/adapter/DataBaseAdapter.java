@@ -177,7 +177,7 @@ public class DataBaseAdapter
         }
     }
 
-    private void setValues(PreparedStatement statement, Object... values) throws SQLException
+    void setValues(PreparedStatement statement, Object... values) throws SQLException
     {
         if (values == null)
         {

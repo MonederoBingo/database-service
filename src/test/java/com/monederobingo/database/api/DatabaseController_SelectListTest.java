@@ -1,14 +1,15 @@
 package com.monederobingo.database.api;
 
 import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.libs.ServiceLogger;
-import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
-import com.monederobingo.database.model.UpdateQuery;
 
 import java.util.List;
 
@@ -20,12 +21,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DatabaseController_OnExceptionTest
+public class DatabaseController_SelectListTest
 {
     private DatabaseController controller;
     private SelectQuery selectQuery;
-    private InsertQuery insertQuery;
-    private UpdateQuery updateQuery;
 
     @Mock
     private DatabaseService service;
@@ -37,21 +36,6 @@ public class DatabaseController_OnExceptionTest
     {
         controller = new DatabaseController(service, serviceLogger);
         selectQuery = new SelectQuery();
-        insertQuery = new InsertQuery();
-        updateQuery = new UpdateQuery();
-    }
-
-    @Test
-    public void shouldReturnErrorResponseForSelectWhenExceptionIsCaught() throws Exception
-    {
-        // given
-        given(service.select(selectQuery)).willThrow(new Exception());
-
-        // when
-        ResponseEntity<ServiceResult<String>> response = controller.select(selectQuery);
-
-        // then
-        assertFailedResponse(response, serviceLogger);
     }
 
     @Test
@@ -68,28 +52,28 @@ public class DatabaseController_OnExceptionTest
     }
 
     @Test
-    public void shouldReturnErrorResponseForInsertWhenExceptionIsCaught() throws Exception
+    public void shouldReturnSameServiceResultFromSelectListService() throws Exception
     {
         // given
-        given(service.insert(insertQuery)).willThrow(new Exception());
+        ServiceResult<List<String>> serviceResult = new ServiceResult<>(true, "");
+        given(service.selectList(selectQuery)).willReturn(serviceResult);
 
         // when
-        ResponseEntity<ServiceResult<Long>> response = controller.insert(insertQuery);
+        ResponseEntity<ServiceResult<List<String>>> response = controller.selectList(selectQuery);
 
         // then
-        assertFailedResponse(response, serviceLogger);
+        assertEquals(serviceResult, response.getBody());
+        assertEquals(OK, response.getStatusCode());
     }
 
     @Test
-    public void shouldReturnErrorResponseForUpdateWhenExceptionIsCaught() throws Exception
+    public void shouldCallDatabaseServiceForSelectList() throws Exception
     {
-        // given
-        given(service.update(updateQuery)).willThrow(new Exception());
-
         // when
-        ResponseEntity<ServiceResult<Integer>> response = controller.update(updateQuery);
+        controller.selectList(selectQuery);
 
         // then
-        assertFailedResponse(response, serviceLogger);
+        verify(service).selectList(selectQuery);
     }
+
 }
