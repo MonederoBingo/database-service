@@ -38,7 +38,6 @@ ext {
 }
 
 dependencies {
-	compile files('libs/libs-0.0.1.jar')
 	compile 'org.springframework:spring-jdbc:3.1.0.RELEASE'
 	compile 'postgresql:postgresql:9.1-901-1.jdbc4'
 	compile 'net.sourceforge.collections:collections-generic:4.01'
@@ -47,6 +46,7 @@ dependencies {
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	extraLibs 'com.monederobingo:libs:0.0.1'
 	testCompile 'org.mockito:mockito-core:2.8.9'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	configurations.compile.extendsFrom(configurations.extraLibs)
