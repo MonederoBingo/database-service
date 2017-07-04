@@ -1,6 +1,4 @@
-Circle Build: [![CircleCI](https://circleci.com/gh/MonederoBingo/database-service/tree/master.svg?style=svg)](https://circleci.com/gh/MonederoBingo/database-service/tree/master)
-
-This service provides support to Monedero Bingo services for sending SQL queries to DB.
+This service provides support to Monedero Bingo services for sending SQL queries to DB. [![CircleCI](https://circleci.com/gh/MonederoBingo/database-service/tree/master.svg?style=svg)](https://circleci.com/gh/MonederoBingo/database-service/tree/master)
 
 
 ## Contribution
