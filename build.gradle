@@ -15,11 +15,6 @@ buildscript {
 	}
 }
 
-configurations {
-	// configuration that holds jars to include in the jar
-	extraLibs
-}
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
@@ -46,21 +41,15 @@ dependencies {
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	extraLibs 'com.monederobingo:libs:0.0.1'
+	compile 'com.monederobingo:libs:0.0.1'
 	testCompile 'org.mockito:mockito-core:2.8.9'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	configurations.compile.extendsFrom(configurations.extraLibs)
+	testCompile group: 'com.h2database', name: 'h2', version: '1.3.148'
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-
-jar {
-	from {
-		configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
 	}
 }
 

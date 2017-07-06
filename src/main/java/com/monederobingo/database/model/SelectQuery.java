@@ -1,17 +1,20 @@
-/* Copyright 2017 Sabre Holdings */
 package com.monederobingo.database.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SelectQuery
 {
-    private String query;
+    private final String query;
+
+    @JsonCreator
+    public SelectQuery(@JsonProperty("query") String query)
+    {
+        this.query = query;
+    }
 
     public String getQuery()
     {
         return query;
-    }
-
-    public void setQuery(String query)
-    {
-        this.query = query;
     }
 }

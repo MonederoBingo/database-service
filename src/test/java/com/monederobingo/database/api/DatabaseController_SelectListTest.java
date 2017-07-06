@@ -35,7 +35,7 @@ public class DatabaseController_SelectListTest
     public void setUp() throws Exception
     {
         controller = new DatabaseController(service, serviceLogger);
-        selectQuery = new SelectQuery();
+        selectQuery = new SelectQuery("");
     }
 
     @Test

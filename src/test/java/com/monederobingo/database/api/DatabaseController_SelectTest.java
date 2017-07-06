@@ -32,8 +32,7 @@ public class DatabaseController_SelectTest
     public void setUp() throws Exception
     {
         controller = new DatabaseController(service, serviceLogger);
-        selectQuery = new SelectQuery();
-        selectQuery.setQuery("");
+        selectQuery = new SelectQuery("");
     }
 
     @Test
@@ -88,8 +87,7 @@ public class DatabaseController_SelectTest
     public void shouldReturnBadRequestErrorIfSelectQueryHasNullQuery()
     {
         //given
-        SelectQuery query = new SelectQuery();
-        query.setQuery(null);
+        SelectQuery query = new SelectQuery(null);
 
         //when
         ResponseEntity<ServiceResult<String>> select = controller.select(query);
@@ -102,8 +100,7 @@ public class DatabaseController_SelectTest
     public void shouldReturnErrorMessageIfSelectQueryHasNullQuery()
     {
         //given
-        SelectQuery query = new SelectQuery();
-        query.setQuery(null);
+        SelectQuery query = new SelectQuery(null);
 
         //when
         ResponseEntity<ServiceResult<String>> select = controller.select(query);

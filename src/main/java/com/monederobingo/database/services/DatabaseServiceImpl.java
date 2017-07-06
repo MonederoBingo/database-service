@@ -105,7 +105,7 @@ public class DatabaseServiceImpl implements DatabaseService
 
     private DataBaseAdapter getDatabaseAdapter() throws InterruptedException
     {
-        return queryAgentFactory.getQueryAgent(threadContextService.getEnvironment());
+        return queryAgentFactory.getDatabaseAdapter(threadContextService.getEnvironment());
     }
 
     @Override public ServiceResult<Long> insert(InsertQuery query) throws Exception

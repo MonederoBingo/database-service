@@ -4,5 +4,5 @@ import com.monederobingo.libs.common.environments.Environment;
 
 public interface DatabaseAdapterFactory
 {
-    DataBaseAdapter getQueryAgent(Environment environment) throws InterruptedException;
+    DataBaseAdapter getDatabaseAdapter(Environment environment) throws InterruptedException;
 }

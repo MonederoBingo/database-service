@@ -59,6 +59,6 @@ public class BaseServiceImpl
 
     DataBaseAdapter getQueryAgent() throws InterruptedException
     {
-        return queryAgentFactory.getQueryAgent(_threadContextService.getEnvironment());
+        return queryAgentFactory.getDatabaseAdapter(_threadContextService.getEnvironment());
     }
 }

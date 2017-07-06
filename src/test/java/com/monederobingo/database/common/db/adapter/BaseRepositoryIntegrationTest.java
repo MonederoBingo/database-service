@@ -36,7 +36,7 @@ public class BaseRepositoryIntegrationTest
 
         UnitTestEnvironment unitTestEnvironment = new UnitTestEnvironment(dbDriver, dbDriverClass, dbUrl, dbUser, dbPassword);
         DataSourceFactory dataSourceFactory = new DataSourceFactory(new DriverManagerDataSourceFactory());
-        _queryAgent = new DatabaseAdapterFactoryImpl(dataSourceFactory).getQueryAgent(unitTestEnvironment);
+        _queryAgent = new DatabaseAdapterFactoryImpl(dataSourceFactory).getDatabaseAdapter(unitTestEnvironment);
     }
 
     @Before
