@@ -35,7 +35,7 @@ public class DataBaseAdapterTest
     @Mock
     private ResultSet resultSet;
     @Mock
-    private DbBuilder<String> builder;
+    private DbBuilder builder;
     @Mock
     private PreparedStatement preparedStatement;
 

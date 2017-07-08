@@ -2,6 +2,8 @@ package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.database.common.db.jdbc.SavepointProxyConnection;
 import com.monederobingo.database.common.db.util.DbBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -87,10 +89,9 @@ public class DataBaseAdapter
      * Executes a Select statement in the database and returns multiple rows.
      *
      * @param builder Helper object that contains placeholders and build method
-     * @param <T>     Type of object to be returned as list and built by DbBuilder
      * @return The list of type T built from the select statement execution
      */
-    public synchronized <T> List<T> selectList(DbBuilder<T> builder) throws Exception
+    public synchronized JSONArray selectList(DbBuilder builder) throws Exception
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection.prepareStatement(builder.sql()))
@@ -99,12 +100,12 @@ public class DataBaseAdapter
 
             try (ResultSet resultSet = statement.executeQuery())
             {
-                List<T> results = new ArrayList<>();
+                JSONArray jsonArray = new JSONArray();
                 while (resultSet.next())
                 {
-                    results.add(builder.build(resultSet));
+                    jsonArray.put(builder.build(resultSet));
                 }
-                return results;
+                return jsonArray;
             }
         }
         finally
@@ -117,10 +118,9 @@ public class DataBaseAdapter
      * Executes a Select statement in the database and returns only one object
      *
      * @param builder Helper object that contains placeholders and build method
-     * @param <T>     Type of object to be returned and built by DbBuilder
      * @return The type T built from the select statement execution
      */
-    public synchronized <T> T selectObject(DbBuilder<T> builder) throws Exception
+    public synchronized JSONObject selectObject(DbBuilder builder) throws Exception
     {
         try (PreparedStatement statement = getConnection().prepareStatement(builder.sql()))
         {
@@ -129,7 +129,7 @@ public class DataBaseAdapter
             {
                 if (!resultSet.next())
                 {
-                    return null;
+                    return new JSONObject();
                 }
                 return builder.build(resultSet);
             }

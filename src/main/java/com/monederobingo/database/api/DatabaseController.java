@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 public class DatabaseController
 {
@@ -57,7 +55,7 @@ public class DatabaseController
     }
 
     @RequestMapping(method = POST, value = "/selectList")
-    public ResponseEntity<ServiceResult<List<String>>> selectList(@RequestBody SelectQuery query) throws Exception
+    public ResponseEntity<ServiceResult<String>> selectList(@RequestBody SelectQuery query) throws Exception
     {
         try
         {

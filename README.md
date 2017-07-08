@@ -10,4 +10,13 @@ create a Pull Request from it.
 [Steps to create the Pull Request in Github.](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)
 
 
+## Building and running tests
+To build the project just execute this command in console or terminal.
+
+`./gradlew build`
+
+You can run this command in order to execute the unit tests.
+
+`./gradlew test`
+
 If you have any question you can join us in our [Gitter Chat](https://gitter.im/MonederoBingo).

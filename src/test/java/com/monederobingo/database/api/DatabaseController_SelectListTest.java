@@ -45,7 +45,7 @@ public class DatabaseController_SelectListTest
         given(service.selectList(selectQuery)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult<List<String>>> response = controller.selectList(selectQuery);
+        ResponseEntity<ServiceResult<String>> response = controller.selectList(selectQuery);
 
         // then
         assertFailedResponse(response, serviceLogger);
@@ -55,11 +55,11 @@ public class DatabaseController_SelectListTest
     public void shouldReturnSameServiceResultFromSelectListService() throws Exception
     {
         // given
-        ServiceResult<List<String>> serviceResult = new ServiceResult<>(true, "");
+        ServiceResult<String> serviceResult = new ServiceResult<>(true, "");
         given(service.selectList(selectQuery)).willReturn(serviceResult);
 
         // when
-        ResponseEntity<ServiceResult<List<String>>> response = controller.selectList(selectQuery);
+        ResponseEntity<ServiceResult<String>> response = controller.selectList(selectQuery);
 
         // then
         assertEquals(serviceResult, response.getBody());

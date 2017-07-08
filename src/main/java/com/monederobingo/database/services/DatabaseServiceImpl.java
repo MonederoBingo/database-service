@@ -12,8 +12,8 @@ import com.monederobingo.database.model.UpdateQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class DatabaseServiceImpl implements DatabaseService
     @Override
     public ServiceResult<String> select(SelectQuery query) throws Exception
     {
-        String object = getDatabaseAdapter().selectObject(new DbBuilder<String>()
+        JSONObject object = getDatabaseAdapter().selectObject(new DbBuilder()
         {
             @Override
             public String sql() throws SQLException
@@ -49,16 +49,16 @@ public class DatabaseServiceImpl implements DatabaseService
             }
 
             @Override
-            public String build(ResultSet resultSet) throws Exception
+            public JSONObject build(ResultSet resultSet) throws Exception
             {
                 int columnCount = resultSet.getMetaData().getColumnCount();
                 JSONObject jsonObject = new JSONObject();
                 buildObject(resultSet, columnCount, jsonObject);
-                return jsonObject.toString();
+                return jsonObject;
             }
         });
 
-        return new ServiceResult<>(true, "", object);
+        return new ServiceResult<>(true, "", object.toString());
     }
 
     private void buildObject(ResultSet resultSet, int columnCount, JSONObject jsonObject) throws Exception
@@ -69,14 +69,14 @@ public class DatabaseServiceImpl implements DatabaseService
             Object object = resultSet.getObject(columnName);
             if(object == null)
                 object = "";
-            jsonObject.put(columnName, object);
+            jsonObject.put(columnName.toLowerCase(), object);
         }
     }
 
     @Override
-    public ServiceResult<List<String>> selectList(SelectQuery query) throws Exception
+    public ServiceResult<String> selectList(SelectQuery query) throws Exception
     {
-        List<String> object = getDatabaseAdapter().selectList(new DbBuilder<String>()
+        JSONArray object = getDatabaseAdapter().selectList(new DbBuilder()
         {
             @Override
             public String sql() throws SQLException
@@ -91,16 +91,16 @@ public class DatabaseServiceImpl implements DatabaseService
             }
 
             @Override
-            public String build(ResultSet resultSet) throws Exception
+            public JSONObject build(ResultSet resultSet) throws Exception
             {
                 int columnCount = resultSet.getMetaData().getColumnCount();
                 JSONObject jsonObject = new JSONObject();
                 buildObject(resultSet, columnCount, jsonObject);
-                return jsonObject.toString();
+                return jsonObject;
             }
         });
 
-        return new ServiceResult<>(true, "", object);
+        return new ServiceResult<>(true, "", object.toString());
     }
 
     private DataBaseAdapter getDatabaseAdapter() throws InterruptedException

@@ -85,8 +85,13 @@ class IntegrationTest
         return dataSource.getConnection();
     }
 
-    void givenThisExecutedQuery(String query) throws SQLException
+    void executeQuery(String query) throws SQLException
     {
         getConnection().prepareStatement(query).execute();
+    }
+
+    void givenThisExecutedQuery(String query) throws SQLException
+    {
+        executeQuery(query);
     }
 }
