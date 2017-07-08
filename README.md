@@ -13,10 +13,14 @@ create a Pull Request from it.
 ## Building and running tests
 To build the project just execute this command in console or terminal.
 
-`./gradlew build`
+Linux/Mac: `./gradlew build`
+
+Windows: `gradlew build`
 
 You can run this command in order to execute the unit tests.
 
-`./gradlew test`
+_Linux/Mac_: `./gradlew test`
+
+_Windows_: `gradlew test`
 
 If you have any question you can join us in our [Gitter Chat](https://gitter.im/MonederoBingo).
