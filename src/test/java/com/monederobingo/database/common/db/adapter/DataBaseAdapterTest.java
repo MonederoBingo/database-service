@@ -1,6 +1,7 @@
 package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.database.common.db.util.DbBuilder;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +17,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -25,6 +29,7 @@ import static org.mockito.Mockito.verify;
 public class DataBaseAdapterTest
 {
 
+    private static final String ANY_SQL = "Any SQL";
     private DataBaseAdapter databaseAdapter;
     @Mock
     private DataSource dataSource;
@@ -178,5 +183,23 @@ public class DataBaseAdapterTest
 
         //then
         verify(connection).prepareStatement("query");
+    }
+
+    @Test
+    public void selectObject_whenExistsRecords_returnsBuiltResultSet() throws Exception
+    {
+        PreparedStatement aPreparedStatement = mock(PreparedStatement.class);
+        given(builder.sql()).willReturn(ANY_SQL);
+        given(connection.prepareStatement(ANY_SQL)).willReturn(aPreparedStatement);
+        given(aPreparedStatement.executeQuery()).willReturn(resultSet);
+        given(resultSet.next()).willReturn(true);
+        JSONObject json = mock(JSONObject.class);
+        given(builder.build(resultSet)).willReturn(json);
+
+
+        JSONObject result = databaseAdapter.selectObject(builder);
+
+        assertThat(result, is(json));
+
     }
 }
