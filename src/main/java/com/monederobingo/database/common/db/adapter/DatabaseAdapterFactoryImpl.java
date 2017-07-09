@@ -19,6 +19,6 @@ public class DatabaseAdapterFactoryImpl implements DatabaseAdapterFactory
     @Override
     public DataBaseAdapter getDatabaseAdapter(Environment environment) throws InterruptedException
     {
-        return new DataBaseAdapter(_dataSourceFactory.getDataSource(environment));
+        return new DataBaseAdapter(_dataSourceFactory.getDataSource(environment), new PreparedStatementMapper());
     }
 }

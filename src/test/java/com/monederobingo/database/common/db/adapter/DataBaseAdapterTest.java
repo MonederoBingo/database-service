@@ -1,6 +1,8 @@
 package com.monederobingo.database.common.db.adapter;
 
 import com.monederobingo.database.common.db.util.DbBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,14 +10,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.sql.DataSource;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -24,8 +24,11 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class DataBaseAdapterTest
 {
+    private static final String ANY_SQL = "Any SQL";
+    private static final Object[] VALUES = new Object[]{};
 
     private DataBaseAdapter databaseAdapter;
+
     @Mock
     private DataSource dataSource;
     @Mock
@@ -38,20 +41,30 @@ public class DataBaseAdapterTest
     private DbBuilder builder;
     @Mock
     private PreparedStatement preparedStatement;
+    @Mock
+    private JSONObject jsonObject;
+    @Mock
+    private JSONObject newJSONObject;
+    @Mock
+    private  PreparedStatementMapper preparedStatementMapper;
 
     @Before
     public void setUp() throws Exception
     {
-        databaseAdapter = new DataBaseAdapter(dataSource);
+        databaseAdapter = new TestableDataBaseAdapter();
         given(dataSource.getConnection()).willReturn(connection);
         given(connection.createStatement()).willReturn(statement);
         given(statement.getGeneratedKeys()).willReturn(resultSet);
         given(connection.prepareStatement(any())).willReturn(preparedStatement);
         given(preparedStatement.executeQuery()).willReturn(resultSet);
+        given(builder.sql()).willReturn(ANY_SQL);
+        given(builder.values()).willReturn(VALUES);
+        given(connection.prepareStatement(ANY_SQL)).willReturn(preparedStatement);
+        given(builder.build(resultSet)).willReturn(jsonObject);
     }
 
     @Test
-    public void shouldGetConnectionFromDatasource() throws SQLException
+    public void shouldGetConnectionFromDataSource() throws SQLException
     {
         //when
         databaseAdapter.getConnection();
@@ -61,7 +74,7 @@ public class DataBaseAdapterTest
     }
 
     @Test
-    public void shouldGetConnectionTwiceFromDatasource() throws SQLException
+    public void shouldGetConnectionTwiceFromDataSource() throws SQLException
     {
         //given
         databaseAdapter.getConnection();
@@ -165,6 +178,7 @@ public class DataBaseAdapterTest
 
         //then
         verify(connection).prepareStatement("query");
+        verify(preparedStatementMapper).map(preparedStatement, VALUES);
     }
 
     @Test
@@ -178,5 +192,55 @@ public class DataBaseAdapterTest
 
         //then
         verify(connection).prepareStatement("query");
+        verify(preparedStatementMapper).map(preparedStatement, VALUES);
+    }
+
+    @Test
+    public void selectList_whenResultSetHasNext_shouldPutBuiltResultInANewJSONArray() throws Exception
+    {
+        given(resultSet.next()).willReturn(true, true, false);
+
+        JSONArray resultJSONArray = databaseAdapter.selectList(builder);
+
+        assertThat(resultJSONArray.length(), is(2));
+        assertThat(resultJSONArray.get(0), is(jsonObject));
+        assertThat(resultJSONArray.get(1), is(jsonObject));
+        verify(preparedStatementMapper).map(preparedStatement, VALUES);
+    }
+
+    @Test
+    public void selectObject_whenExistsRecords_returnsBuiltResultSet() throws Exception
+    {
+        given(resultSet.next()).willReturn(true);
+
+        JSONObject result = databaseAdapter.selectObject(builder);
+
+        assertThat(result, is(jsonObject));
+        verify(preparedStatementMapper).map(preparedStatement, VALUES);
+    }
+
+    @Test
+    public void selectObject_whenDoNotExistRecords_returnANewJsonObject() throws Exception
+    {
+        given(resultSet.next()).willReturn(false);
+
+        JSONObject result = databaseAdapter.selectObject(builder);
+
+        assertThat(result, equalTo(newJSONObject));
+        verify(preparedStatementMapper).map(preparedStatement, VALUES);
+    }
+
+    private class TestableDataBaseAdapter extends DataBaseAdapter
+    {
+        TestableDataBaseAdapter()
+        {
+            super(dataSource, preparedStatementMapper);
+        }
+
+        @Override
+        JSONObject newJSONObject()
+        {
+            return newJSONObject;
+        }
     }
 }

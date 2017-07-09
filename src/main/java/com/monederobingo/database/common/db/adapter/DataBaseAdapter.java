@@ -5,15 +5,8 @@ import com.monederobingo.database.common.db.util.DbBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 import javax.sql.DataSource;
+import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -23,10 +16,12 @@ public class DataBaseAdapter
     private final transient DataSource dataSource;
     private transient Connection connection = null;
     private boolean _isInTransaction;
+    private final transient PreparedStatementMapper preparedStatementMapper;
 
-    DataBaseAdapter(DataSource dataSource)
+    DataBaseAdapter(DataSource dataSource, PreparedStatementMapper preparedStatementMapper)
     {
         this.dataSource = dataSource;
+        this.preparedStatementMapper = preparedStatementMapper;
     }
 
     /**
@@ -52,8 +47,7 @@ public class DataBaseAdapter
      */
     public long executeInsert(String sql, String id) throws Exception
     {
-        Connection connection = getConnection();
-        try (Statement statement = connection.createStatement())
+        try (Statement statement = getConnection().createStatement())
         {
             statement.execute(sql, RETURN_GENERATED_KEYS);
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -74,8 +68,7 @@ public class DataBaseAdapter
      */
     public int executeUpdate(String sql) throws Exception
     {
-        Connection connection = getConnection();
-        try (Statement statement = connection.createStatement())
+        try (Statement statement = getConnection().createStatement())
         {
             return statement.executeUpdate(sql);
         }
@@ -93,8 +86,7 @@ public class DataBaseAdapter
      */
     public synchronized JSONArray selectList(DbBuilder builder) throws Exception
     {
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(builder.sql()))
+        try (PreparedStatement statement = getConnection().prepareStatement(builder.sql()))
         {
             setValues(statement, builder.values());
 
@@ -127,17 +119,20 @@ public class DataBaseAdapter
             setValues(statement, builder.values());
             try (ResultSet resultSet = statement.executeQuery())
             {
-                if (!resultSet.next())
-                {
-                    return new JSONObject();
-                }
-                return builder.build(resultSet);
+                return resultSet.next()
+                        ? builder.build(resultSet)
+                        : newJSONObject();
             }
         }
         finally
         {
             releaseConnectionIfPossible();
         }
+    }
+
+    JSONObject newJSONObject()
+    {
+        return new JSONObject();
     }
 
     synchronized void beginTransaction() throws Exception
@@ -148,7 +143,7 @@ public class DataBaseAdapter
 
     synchronized void rollbackTransaction() throws Exception
     {
-        if (connection != null)
+        if (existsConnection())
         {
             try
             {
@@ -163,73 +158,43 @@ public class DataBaseAdapter
         }
     }
 
-    boolean isInTransaction()
+    private boolean isInTransaction()
     {
         return _isInTransaction;
     }
 
     private synchronized void releaseConnectionIfPossible() throws SQLException
     {
-        if (!isInTransaction() && connection != null)
+        if (!isInTransaction() && existsConnection())
         {
-            connection.close();
-            connection = null;
+            releaseConnection();
         }
     }
 
-    void setValues(PreparedStatement statement, Object... values) throws SQLException
+    private void releaseConnection() throws SQLException
     {
-        if (values == null)
-        {
-            return;
-        }
-        for (int i = 0; i < values.length; i++)
-        {
-            Object obj = values[i];
-            if (obj == null)
-            {
-                statement.setNull(i + 1, Types.NULL);
-            }
-            else if (obj instanceof String)
-            {
-                statement.setString(i + 1, (String) obj);
-            }
-            else if (obj instanceof Integer)
-            {
-                statement.setInt(i + 1, (Integer) obj);
-            }
-            else if (obj instanceof Boolean)
-            {
-                statement.setBoolean(i + 1, (Boolean) obj);
-            }
-            else if (obj instanceof Double)
-            {
-                statement.setDouble(i + 1, (Double) obj);
-            }
-            else if (obj instanceof Long)
-            {
-                statement.setLong(i + 1, (Long) obj);
-            }
-            else if (obj instanceof String[])
-            {
-                statement.setArray(i + 1, statement.getConnection().createArrayOf("varchar", (String[]) obj));
-            }
-            else
-            {
-                throw new RuntimeException("Unsupported SQL type for object : " + obj);
-            }
-        }
+        connection.close();
+        connection = null;
+    }
+
+    private void setValues(PreparedStatement statement, Object... values) throws SQLException
+    {
+        preparedStatementMapper.map(statement, values);
     }
 
     @Override
     protected void finalize() throws Throwable
     {
-        if (connection != null)
+        if (existsConnection())
         {
-            connection.close();
-            connection = null;
+            releaseConnection();
         }
         super.finalize();
+    }
+
+    private boolean existsConnection()
+    {
+        return connection != null;
     }
 
     public synchronized void beginTransactionForFunctionalTest() throws SQLException
