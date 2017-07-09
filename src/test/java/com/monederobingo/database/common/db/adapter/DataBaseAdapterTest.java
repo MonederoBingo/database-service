@@ -1,5 +1,6 @@
 package com.monederobingo.database.common.db.adapter;
 
+import com.monederobingo.database.common.db.jdbc.SavepointProxyConnection;
 import com.monederobingo.database.common.db.util.DbBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,11 +16,13 @@ import java.sql.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataBaseAdapterTest
@@ -47,6 +50,8 @@ public class DataBaseAdapterTest
     private JSONObject newJSONObject;
     @Mock
     private  PreparedStatementMapper preparedStatementMapper;
+    @Mock
+    private SavepointProxyConnection savepointProxyConnection;
 
     @Before
     public void setUp() throws Exception
@@ -230,6 +235,57 @@ public class DataBaseAdapterTest
         verify(preparedStatementMapper).map(preparedStatement, VALUES);
     }
 
+    @Test
+    public void beginTransaction_disableAutoCommitAndMarkAsInTransactionState() throws Exception
+    {
+        databaseAdapter.beginTransaction();
+
+        verify(connection).setAutoCommit(false);
+        assertThat(databaseAdapter.isInTransaction(), is(true));
+    }
+
+    @Test
+    public void rollbackTransaction_whenExistsConnection_preparesConnectionForRollbackAndReleasesConnection() throws Exception
+    {
+        // used to create the connection
+        databaseAdapter.getConnection();
+
+        databaseAdapter.rollbackTransaction();
+
+        verify(connection).rollback();
+        verify(connection).setAutoCommit(true);
+        assertThat(databaseAdapter.isInTransaction(), is(false));
+        verify(connection).close();
+    }
+
+    @Test
+    public void rollbackTransaction_whenDoesNotExistConnection_doesNothing() throws Exception
+    {
+        databaseAdapter.rollbackTransaction();
+
+        verifyZeroInteractions(connection);
+    }
+
+    @Test
+    public void beginTransactionForFunctionalTest_usesSavepointProxyConnectionAsConnection() throws Exception
+    {
+        databaseAdapter.beginTransactionForFunctionalTest();
+
+        verify(savepointProxyConnection).beginTransactionForAutomationTest();
+
+        assertThat(databaseAdapter.currentConnection(), is(savepointProxyConnection));
+    }
+
+    @Test
+    public void rollbackTransactionForFunctionalTest_usesSavepointProxyConnectionAsConnectionAndSetNullCurrentConnection() throws Exception
+    {
+        databaseAdapter.rollbackTransactionForFunctionalTest();
+
+        verify(savepointProxyConnection).rollbackTransactionForAutomationTest();
+
+        assertNull(databaseAdapter.currentConnection());
+    }
+
     private class TestableDataBaseAdapter extends DataBaseAdapter
     {
         TestableDataBaseAdapter()
@@ -241,6 +297,11 @@ public class DataBaseAdapterTest
         JSONObject newJSONObject()
         {
             return newJSONObject;
+        }
+
+        @Override
+        SavepointProxyConnection getConnectionForFunctionalTests() throws SQLException {
+            return savepointProxyConnection;
         }
     }
 }

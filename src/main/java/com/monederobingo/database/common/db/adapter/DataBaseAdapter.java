@@ -31,11 +31,11 @@ public class DataBaseAdapter
      */
     Connection getConnection() throws SQLException
     {
-        if (connection == null)
+        if (currentConnection() == null)
         {
             connection = dataSource.getConnection();
         }
-        return connection;
+        return currentConnection();
     }
 
     /**
@@ -88,7 +88,7 @@ public class DataBaseAdapter
     {
         try (PreparedStatement statement = getConnection().prepareStatement(builder.sql()))
         {
-            setValues(statement, builder.values());
+            preparedStatementMapper.map(statement, builder.values());
 
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -116,7 +116,8 @@ public class DataBaseAdapter
     {
         try (PreparedStatement statement = getConnection().prepareStatement(builder.sql()))
         {
-            setValues(statement, builder.values());
+            preparedStatementMapper.map(statement, builder.values());
+
             try (ResultSet resultSet = statement.executeQuery())
             {
                 return resultSet.next()
@@ -158,7 +159,7 @@ public class DataBaseAdapter
         }
     }
 
-    private boolean isInTransaction()
+    boolean isInTransaction()
     {
         return _isInTransaction;
     }
@@ -173,13 +174,8 @@ public class DataBaseAdapter
 
     private void releaseConnection() throws SQLException
     {
-        connection.close();
+        currentConnection().close();
         connection = null;
-    }
-
-    private void setValues(PreparedStatement statement, Object... values) throws SQLException
-    {
-        preparedStatementMapper.map(statement, values);
     }
 
     @Override
@@ -194,20 +190,28 @@ public class DataBaseAdapter
 
     private boolean existsConnection()
     {
-        return connection != null;
+        return currentConnection() != null;
+    }
+
+    Connection currentConnection() {
+        return connection;
     }
 
     public synchronized void beginTransactionForFunctionalTest() throws SQLException
     {
-        SavepointProxyConnection connection = (SavepointProxyConnection) getConnection();
+        SavepointProxyConnection connection = getConnectionForFunctionalTests();
         connection.beginTransactionForAutomationTest();
         this.connection = connection;
     }
 
     public synchronized void rollbackTransactionForFunctionalTest() throws SQLException
     {
-        SavepointProxyConnection connection = (SavepointProxyConnection) getConnection();
+        SavepointProxyConnection connection = getConnectionForFunctionalTests();
         connection.rollbackTransactionForAutomationTest();
         this.connection = null;
+    }
+
+    SavepointProxyConnection getConnectionForFunctionalTests() throws SQLException {
+        return (SavepointProxyConnection) getConnection();
     }
 }
