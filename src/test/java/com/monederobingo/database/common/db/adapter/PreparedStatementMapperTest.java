@@ -49,14 +49,14 @@ public class PreparedStatementMapperTest
     }
 
     @Test
-    public void setValues_forNullValues_doNothing() throws Exception
+    public void map_forNullValues_doNothing() throws Exception
     {
         mapper.map(statement, NO_VALUES);
         verifyZeroInteractions(statement);
     }
 
     @Test
-    public void setValues_forValidValues_setValuesWithRespectiveObject() throws Exception
+    public void map_forValidValues_setValuesWithRespectiveObject() throws Exception
     {
         mapper.map(statement, VALID_VALUES);
         verify(statement).setNull(1, Types.NULL);
@@ -69,7 +69,7 @@ public class PreparedStatementMapperTest
     }
 
     @Test
-    public void setValues_forInvalidObject_throwsAnRuntimeException() throws Exception
+    public void map_forInvalidObject_throwsAnRuntimeException() throws Exception
     {
         expectedException.expect(RuntimeException.class);
         expectedException.expectMessage("Unsupported SQL type for object : Test Object");
