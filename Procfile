@@ -1,1 +1,1 @@
-release: java -cp target/spring-boot-sample-flyway-1.0.0.jar:target/dependency/* com.monederobingo.database.migrations.Migrate
+release: java -cp build/libs/database-service-0.0.1-SNAPSHOT.jar:build/resources/* com.monederobingo.database.migrations.Migrate
