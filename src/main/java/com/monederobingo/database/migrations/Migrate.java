@@ -10,7 +10,7 @@ public class Migrate
     {
         Flyway flyway = new Flyway();
         flyway.setDataSource(getUrl(), getUsername(), getPassword());
-
+        flyway.setLocations("classpath:db/migration");
         for (String schema : schemas)
         {
             flyway.setSchemas(schema);
