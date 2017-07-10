@@ -39,6 +39,7 @@ configurations {
 dependencies {
 	compile 'org.springframework:spring-jdbc:3.1.0.RELEASE'
 	compile 'postgresql:postgresql:9.1-901-1.jdbc4'
+	deployment 'postgresql:postgresql:9.1-901-1.jdbc4'
 	compile 'net.sourceforge.collections:collections-generic:4.01'
 	compile 'org.json:json:20090211'
 	compile 'commons-lang:commons-lang:2.6'
