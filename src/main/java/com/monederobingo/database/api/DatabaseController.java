@@ -64,7 +64,7 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,7 +78,7 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,7 +92,7 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, ""), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 }

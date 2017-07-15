@@ -31,11 +31,13 @@ public class DataSourceFactory
         return dataSource;
     }
 
-    public DataSource getDataSource(Environment environment) throws InterruptedException
+    public DataSource getDataSource(Environment environment) throws Exception
     {
         final DataSource dataSource = dataSources.compute(environment);
         if (dataSource == null)
             throw new RuntimeException("DataSource cannot be null!");
+
+        dataSource.getConnection().prepareStatement("ALTER ROLE " + environment.getDatabaseUsername() + " SET search_path = " + environment.getSchema()).execute();
         return dataSource;
     }
 }

@@ -67,6 +67,11 @@ class IntegrationTest
                 return null;
             }
 
+            @Override public String getSchema()
+            {
+                return null;
+            }
+
             @Override
             public String getClientUrl()
             {

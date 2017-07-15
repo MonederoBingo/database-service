@@ -20,13 +20,13 @@ public class BaseRepositoryIntegrationTest
         {
             loadQueryAgent();
         }
-        catch (InterruptedException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
     }
 
-    private static void loadQueryAgent() throws InterruptedException
+    private static void loadQueryAgent() throws Exception
     {
         String dbDriver = "jdbc:postgresql://";
         String dbDriverClass = "org.postgresql.Driver";

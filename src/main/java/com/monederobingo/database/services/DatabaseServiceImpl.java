@@ -103,7 +103,7 @@ public class DatabaseServiceImpl implements DatabaseService
         return new ServiceResult<>(true, "", object.toString());
     }
 
-    private DataBaseAdapter getDatabaseAdapter() throws InterruptedException
+    private DataBaseAdapter getDatabaseAdapter() throws Exception
     {
         return queryAgentFactory.getDatabaseAdapter(threadContextService.getEnvironment());
     }

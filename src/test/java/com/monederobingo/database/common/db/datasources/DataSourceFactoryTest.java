@@ -1,6 +1,7 @@
 package com.monederobingo.database.common.db.datasources;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,6 +18,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 @RunWith(MockitoJUnitRunner.class)
 public class DataSourceFactoryTest
 {
@@ -29,16 +33,22 @@ public class DataSourceFactoryTest
     private DriverManagerDataSourceFactory driverManagerDataSourceFactory;
     @Mock
     private DriverManagerDataSource driverManagerDataSource;
+    @Mock
+    private Connection connection;
+    @Mock
+    private PreparedStatement preparedStatement;
 
     @Before
     public void setUp() throws Exception
     {
         dataSourceFactory = new DataSourceFactory(driverManagerDataSourceFactory);
         given(driverManagerDataSourceFactory.createDriverManagerDataSource()).willReturn(driverManagerDataSource);
+        given(driverManagerDataSource.getConnection()).willReturn(connection);
+        given(connection.prepareStatement(anyString())).willReturn(preparedStatement);
     }
 
     @Test
-    public void shouldReturnNewDataSource() throws InterruptedException
+    public void shouldReturnNewDataSource() throws Exception
     {
         // when
         DataSource dataSource = dataSourceFactory.getDataSource(prodEnvironment);
@@ -48,7 +58,7 @@ public class DataSourceFactoryTest
     }
 
     @Test
-    public void shouldCreateOnlyOneDataSourceForSameEnvironment() throws InterruptedException
+    public void shouldCreateOnlyOneDataSourceForSameEnvironment() throws Exception
     {
 
         // when
@@ -60,7 +70,7 @@ public class DataSourceFactoryTest
     }
 
     @Test
-    public void shouldCreateOneDataSourceForEveryDifferentEnvironment() throws InterruptedException
+    public void shouldCreateOneDataSourceForEveryDifferentEnvironment() throws Exception
     {
 
         // when
@@ -71,4 +81,19 @@ public class DataSourceFactoryTest
         // then
         verify(driverManagerDataSourceFactory, times(2)).createDriverManagerDataSource();
     }
+
+    @Test
+    public void shouldChangeSearchPathInConnection() throws Exception
+    {
+        //given
+        given(prodEnvironment.getDatabaseUsername()).willReturn("user");
+        given(prodEnvironment.getSchema()).willReturn("schema");
+
+        // when
+        dataSourceFactory.getDataSource(prodEnvironment);
+
+        // then
+        verify(connection).prepareStatement("ALTER ROLE user SET search_path = schema");
+    }
+
 }

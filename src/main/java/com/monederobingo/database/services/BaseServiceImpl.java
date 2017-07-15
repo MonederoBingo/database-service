@@ -16,7 +16,7 @@ public class BaseServiceImpl
     private final ThreadContextService _threadContextService;
     private final DatabaseAdapterFactory queryAgentFactory;
 
-    public BaseServiceImpl(ThreadContextService threadContextService, DatabaseAdapterFactory queryAgentFactory)
+    BaseServiceImpl(ThreadContextService threadContextService, DatabaseAdapterFactory queryAgentFactory)
     {
         _threadContextService = threadContextService;
         this.queryAgentFactory = queryAgentFactory;
@@ -57,7 +57,7 @@ public class BaseServiceImpl
         return _threadContextService.getThreadContext();
     }
 
-    DataBaseAdapter getQueryAgent() throws InterruptedException
+    DataBaseAdapter getQueryAgent() throws Exception
     {
         return queryAgentFactory.getDatabaseAdapter(_threadContextService.getEnvironment());
     }
