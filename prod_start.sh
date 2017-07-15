@@ -4,5 +4,5 @@ java $JAVA_OPTS \
     -Deureka.client.service-url.defaultZone=https://mb-discovery-service.herokuapp.com/eureka/ \
     -Deureka.instance.hostname=database.monederobingo.com \
     -Deureka.instance.prefer-ip-address=false \
-    -Dspring.cloud.config.uri=https://mb-configuration-service.herokuapp.com/
+    -Dspring.cloud.config.uri=https://mb-configuration-service.herokuapp.com/ \
     -jar app.jar \
