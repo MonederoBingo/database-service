@@ -46,7 +46,7 @@ dependencies {
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	compile 'com.monederobingo:libs:0.0.7'
+	compile 'com.monederobingo:libs:0.0.8'
 	compile 'org.flywaydb:flyway-core:3.0'
 	deployment 'org.flywaydb:flyway-core:3.0'
 	testCompile 'org.mockito:mockito-core:2.8.9'
