@@ -1,0 +1,6 @@
+#!/bin/bash
+cd src/MonederoBingo/database-service
+title='Database Service'
+echo -n -e "\033]0;$title\007"
+sh gradlew build -x test
+java -jar build/libs/database-service-0.0.1-SNAPSHOT.jar
