@@ -12,53 +12,59 @@ import com.monederobingo.database.model.UpdateQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xyz.greatapp.libs.database.queries.Select;
+import xyz.greatapp.libs.service.Environment;
+import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
 
 @Component
 public class DatabaseServiceImpl implements DatabaseService
 {
-    private final ThreadContextService threadContextService;
-    private final DatabaseAdapterFactory queryAgentFactory;
+    private final ThreadContextService oldThreadContextService;
+    private final DatabaseAdapterFactory oldDatabaseAdapterFactory;
+    private final xyz.greatapp.libs.service.context.ThreadContextService threadContextService;
+    private final xyz.greatapp.libs.database.adapter.DatabaseAdapterFactory databaseAdapterFactory;
+
+    private final static Map<Environment, String> schemasMap = new HashMap<>();
+
+    static {
+        schemasMap.put(Environment.DEV, "greatappxyz");
+        schemasMap.put(Environment.PROD, "greatappxyz");
+        schemasMap.put(Environment.AUTOMATION_TEST, "greatappxyz_test");
+        schemasMap.put(Environment.UAT, "greatappxyz_test");
+        schemasMap.put(Environment.INTEGRATION_TEST, "public");
+    }
+
+    private String getSchema() {
+        return schemasMap.getOrDefault(oldThreadContextService.getEnvironment(), "greatappxyz_test") + ".";
+    }
 
     @Autowired
-    public DatabaseServiceImpl(ThreadContextService threadContextService, DatabaseAdapterFactory queryAgentFactory)
+    public DatabaseServiceImpl(ThreadContextService oldThreadContextService, DatabaseAdapterFactory oldDatabaseAdapterFactory,
+                               xyz.greatapp.libs.service.context.ThreadContextService threadContextService,
+                               xyz.greatapp.libs.database.adapter.DatabaseAdapterFactory databaseAdapterFactory)
     {
+        this.oldThreadContextService = oldThreadContextService;
+        this.oldDatabaseAdapterFactory = oldDatabaseAdapterFactory;
         this.threadContextService = threadContextService;
-        this.queryAgentFactory = queryAgentFactory;
+        this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
     @Override
-    public ServiceResult<String> select(SelectQuery query) throws Exception
+    public xyz.greatapp.libs.service.ServiceResult select(SelectQueryRQ query) throws Exception {
+        return new Select(getDatabaseAdapter(), getSchema(), query)
+                .execute();
+    }
+
+    xyz.greatapp.libs.database.adapter.DataBaseAdapter getDatabaseAdapter() throws Exception
     {
-        JSONObject object = getDatabaseAdapter().selectObject(new DbBuilder()
-        {
-            @Override
-            public String sql() throws SQLException
-            {
-                return query.getQuery();
-            }
-
-            @Override
-            public Object[] values()
-            {
-                return new Object[0];
-            }
-
-            @Override
-            public JSONObject build(ResultSet resultSet) throws Exception
-            {
-                int columnCount = resultSet.getMetaData().getColumnCount();
-                JSONObject jsonObject = new JSONObject();
-                buildObject(resultSet, columnCount, jsonObject);
-                return jsonObject;
-            }
-        });
-
-        return new ServiceResult<>(true, "", object.toString());
+        return databaseAdapterFactory.getDatabaseAdapter(threadContextService.getEnvironment());
     }
 
     private void buildObject(ResultSet resultSet, int columnCount, JSONObject jsonObject) throws Exception
@@ -76,7 +82,7 @@ public class DatabaseServiceImpl implements DatabaseService
     @Override
     public ServiceResult<String> selectList(SelectQuery query) throws Exception
     {
-        JSONArray object = getDatabaseAdapter().selectList(new DbBuilder()
+        JSONArray object = getOldDatabaseAdapter().selectList(new DbBuilder()
         {
             @Override
             public String sql() throws SQLException
@@ -103,20 +109,20 @@ public class DatabaseServiceImpl implements DatabaseService
         return new ServiceResult<>(true, "", object.toString());
     }
 
-    private DataBaseAdapter getDatabaseAdapter() throws Exception
+    private DataBaseAdapter getOldDatabaseAdapter() throws Exception
     {
-        return queryAgentFactory.getDatabaseAdapter(threadContextService.getEnvironment());
+        return oldDatabaseAdapterFactory.getDatabaseAdapter(oldThreadContextService.getEnvironment());
     }
 
     @Override public ServiceResult<Long> insert(InsertQuery query) throws Exception
     {
-        long newId = getDatabaseAdapter().executeInsert(query.getQuery(), query.getIdColumnName());
+        long newId = getOldDatabaseAdapter().executeInsert(query.getQuery(), query.getIdColumnName());
         return new ServiceResult<>(true, "", newId);
     }
 
     @Override public ServiceResult<Integer> update(UpdateQuery query) throws Exception
     {
-        int updatedRows = getDatabaseAdapter().executeUpdate(query.getQuery());
+        int updatedRows = getOldDatabaseAdapter().executeUpdate(query.getQuery());
         return new ServiceResult<>(true, "", updatedRows);
     }
 }

@@ -1,6 +1,6 @@
 package com.monederobingo.database.api;
 
-import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
+import static com.monederobingo.database.api.ControllerAssertions.oldAssertFailedResponse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -10,8 +10,6 @@ import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.libs.ServiceLogger;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
-
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +46,7 @@ public class DatabaseController_SelectListTest
         ResponseEntity<ServiceResult<String>> response = controller.selectList(selectQuery);
 
         // then
-        assertFailedResponse(response, serviceLogger);
+        oldAssertFailedResponse(response, serviceLogger);
     }
 
     @Test

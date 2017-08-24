@@ -4,10 +4,11 @@ import com.monederobingo.database.model.InsertQuery;
 import com.monederobingo.database.model.SelectQuery;
 import com.monederobingo.database.model.ServiceResult;
 import com.monederobingo.database.model.UpdateQuery;
+import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
 
 public interface DatabaseService
 {
-    ServiceResult<String> select(SelectQuery query) throws Exception;
+    xyz.greatapp.libs.service.ServiceResult select(SelectQueryRQ query) throws Exception;
 
     ServiceResult<String> selectList(SelectQuery query) throws Exception;
 

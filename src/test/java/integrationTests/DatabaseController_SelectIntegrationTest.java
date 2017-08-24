@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import xyz.greatapp.libs.service.requests.database.ColumnValue;
+import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseController_SelectIntegrationTest extends IntegrationTest
@@ -45,7 +47,7 @@ public class DatabaseController_SelectIntegrationTest extends IntegrationTest
         //given empty database
 
         //when
-        ResponseEntity<ServiceResult<String>> responseEntity = databaseController.select(new SelectQuery("SELECT * from dummy;"));
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> responseEntity = databaseController.select(new SelectQueryRQ("dummy", new ColumnValue[0]));
 
         //then
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -59,7 +61,7 @@ public class DatabaseController_SelectIntegrationTest extends IntegrationTest
         givenThisExecutedQuery("CREATE TABLE dummy (id INTEGER);");
 
         //when
-        ResponseEntity<ServiceResult<String>> responseEntity = databaseController.select(new SelectQuery("SELECT * from dummy;"));
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> responseEntity = databaseController.select(new SelectQueryRQ("dummy", new ColumnValue[0]));
 
         //then
         assertEquals(OK, responseEntity.getStatusCode());
@@ -74,7 +76,7 @@ public class DatabaseController_SelectIntegrationTest extends IntegrationTest
         givenThisExecutedQuery("INSERT INTO dummy VALUES (1, 'abc')");
 
         //when
-        ResponseEntity<ServiceResult<String>> responseEntity = databaseController.select(new SelectQuery("SELECT * from dummy;"));
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> responseEntity = databaseController.select(new SelectQueryRQ("dummy", new ColumnValue[0]));
 
         //then
         JSONObject jsonObject = new JSONObject(responseEntity.getBody().getObject());
@@ -90,7 +92,9 @@ public class DatabaseController_SelectIntegrationTest extends IntegrationTest
         givenThisExecutedQuery("INSERT INTO dummy VALUES (1, 'abc')");
 
         //when
-        ResponseEntity<ServiceResult<String>> responseEntity = databaseController.select(new SelectQuery("SELECT * from dummy WHERE id = 2;"));
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> responseEntity = databaseController.select(new SelectQueryRQ("dummy", new ColumnValue[] {
+                new ColumnValue("id", "2")
+        }));
 
         //then
         JSONObject jsonObject = new JSONObject(responseEntity.getBody().getObject());

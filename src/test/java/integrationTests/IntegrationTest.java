@@ -7,81 +7,78 @@ import com.monederobingo.database.services.DatabaseServiceImpl;
 import com.monederobingo.libs.common.context.ThreadContextServiceImpl;
 import com.monederobingo.libs.common.environments.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import xyz.greatapp.libs.database.adapter.DatabaseAdapterFactory;
+import xyz.greatapp.libs.database.environments.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-class IntegrationTest
-{
+class IntegrationTest {
 
     private String DRIVER_CLASS = "org.h2.Driver";
     private String DATABASE_PATH = "jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1";
     private String USERNAME = "sa";
     private String PASSWORD = "sa";
 
-    DatabaseServiceImpl getDatabaseService()
-    {
+    DatabaseServiceImpl getDatabaseService() {
         ThreadContextServiceImpl threadContextService = new ThreadContextServiceImpl();
         threadContextService.initializeContext(createEnv());
-        return new DatabaseServiceImpl(threadContextService, getDatabaseAdapterFactory());
+
+        return new DatabaseServiceImpl(threadContextService, getOldDatabaseAdapterFactory(), new xyz.greatapp.libs.service.context.ThreadContextServiceImpl(), getDatabaseAdapterFactory());
     }
 
-    private DatabaseAdapterFactoryImpl getDatabaseAdapterFactory()
-    {
+    private DatabaseAdapterFactory getDatabaseAdapterFactory() {
+        return new DatabaseAdapterFactory(new xyz.greatapp.libs.database.datasources.DataSourceFactory(new xyz.greatapp.libs.database.datasources.DriverManagerDataSourceFactory()),
+        new DevEnvironment()
+        , new UATEnvironment(), new ProdEnvironment(), new AutomationTestEnvironment(), new IntegrationTestEnvironment());
+    }
+
+    private DatabaseAdapterFactoryImpl getOldDatabaseAdapterFactory() {
         return new DatabaseAdapterFactoryImpl(
                 new DataSourceFactory(
                         new DriverManagerDataSourceFactory()));
     }
 
-    private Environment createEnv()
-    {
-        return new Environment()
-        {
+    private Environment createEnv() {
+        return new Environment() {
             @Override
-            public String getDatabasePath()
-            {
+            public String getDatabasePath() {
                 return DATABASE_PATH;
             }
 
             @Override
-            public String getDatabaseDriverClass()
-            {
+            public String getDatabaseDriverClass() {
                 return DRIVER_CLASS;
             }
 
             @Override
-            public String getDatabaseUsername()
-            {
+            public String getDatabaseUsername() {
                 return USERNAME;
             }
 
             @Override
-            public String getDatabasePassword()
-            {
+            public String getDatabasePassword() {
                 return PASSWORD;
             }
 
             @Override
-            public String getImageDir()
-            {
-                return null;
-            }
-
-            @Override public String getSchema()
-            {
+            public String getImageDir() {
                 return null;
             }
 
             @Override
-            public String getClientUrl()
-            {
+            public String getSchema() {
+                return null;
+            }
+
+            @Override
+            public String getClientUrl() {
                 return null;
             }
         };
     }
 
-    private Connection getConnection() throws SQLException
-    {
+    private Connection getConnection() throws SQLException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DRIVER_CLASS);
         dataSource.setUrl(DATABASE_PATH);
@@ -90,13 +87,11 @@ class IntegrationTest
         return dataSource.getConnection();
     }
 
-    void executeQuery(String query) throws SQLException
-    {
+    void executeQuery(String query) throws SQLException {
         getConnection().prepareStatement(query).execute();
     }
 
-    void givenThisExecutedQuery(String query) throws SQLException
-    {
+    void givenThisExecutedQuery(String query) throws SQLException {
         executeQuery(query);
     }
 }

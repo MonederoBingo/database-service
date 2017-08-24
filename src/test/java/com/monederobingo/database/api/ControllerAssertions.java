@@ -12,7 +12,14 @@ import org.springframework.http.ResponseEntity;
 
 class ControllerAssertions
 {
-    static <T> void assertFailedResponse(ResponseEntity<ServiceResult<T>> response, ServiceLogger logger)
+    static <T> void oldAssertFailedResponse(ResponseEntity<ServiceResult<T>> response, ServiceLogger logger)
+    {
+        assertFalse(response.getBody().isSuccess());
+        assertEquals(INTERNAL_SERVER_ERROR, response.getStatusCode());
+        verify(logger).error(any(), any(Exception.class));
+    }
+
+    static <T> void assertFailedResponse(ResponseEntity<xyz.greatapp.libs.service.ServiceResult> response, ServiceLogger logger)
     {
         assertFalse(response.getBody().isSuccess());
         assertEquals(INTERNAL_SERVER_ERROR, response.getStatusCode());

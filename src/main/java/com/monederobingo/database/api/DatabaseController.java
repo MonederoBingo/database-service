@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
 
 @RestController
 public class DatabaseController
@@ -31,27 +32,27 @@ public class DatabaseController
     }
 
     @RequestMapping(method = POST, value = "/select")
-    public ResponseEntity<ServiceResult<String>> select(@RequestBody SelectQuery query)
+    public ResponseEntity<xyz.greatapp.libs.service.ServiceResult> select(@RequestBody SelectQueryRQ query)
     {
         try
         {
             if(invalidParams(query))
             {
-                return new ResponseEntity<>(new ServiceResult<>(false, "query.must.not.be.null"), BAD_REQUEST);
+                return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, "query.must.not.be.null"), BAD_REQUEST);
             }
             return new ResponseEntity<>(databaseService.select(query), OK);
         }
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 
-    private boolean invalidParams(SelectQuery query)
+    private boolean invalidParams(SelectQueryRQ query)
     {
         return query == null ||
-                query.getQuery() == null;
+                query.getTable() == null;
     }
 
     @RequestMapping(method = POST, value = "/selectList")

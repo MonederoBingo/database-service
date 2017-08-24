@@ -1,6 +1,6 @@
 package com.monederobingo.database.api;
 
-import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
+import static com.monederobingo.database.api.ControllerAssertions.oldAssertFailedResponse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -45,7 +45,7 @@ public class DatabaseController_InsertTest
         ResponseEntity<ServiceResult<Long>> response = controller.insert(insertQuery);
 
         // then
-        assertFailedResponse(response, serviceLogger);
+        oldAssertFailedResponse(response, serviceLogger);
     }
 
     @Test

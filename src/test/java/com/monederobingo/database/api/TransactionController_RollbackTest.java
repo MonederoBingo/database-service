@@ -1,6 +1,6 @@
 package com.monederobingo.database.api;
 
-import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
+import static com.monederobingo.database.api.ControllerAssertions.oldAssertFailedResponse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -58,7 +58,7 @@ public class TransactionController_RollbackTest
         ResponseEntity<ServiceResult<Object>> response = transactionController.rollback();
 
         //then
-        assertFailedResponse(response, serviceLogger);
+        oldAssertFailedResponse(response, serviceLogger);
     }
 
     @Test

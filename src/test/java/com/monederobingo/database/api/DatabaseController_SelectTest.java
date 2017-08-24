@@ -1,5 +1,16 @@
 package com.monederobingo.database.api;
 
+import com.monederobingo.database.api.interfaces.DatabaseService;
+import com.monederobingo.database.libs.ServiceLogger;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.ResponseEntity;
+import xyz.greatapp.libs.service.requests.database.ColumnValue;
+import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
+
 import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -7,56 +18,41 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.monederobingo.database.api.interfaces.DatabaseService;
-import com.monederobingo.database.libs.ServiceLogger;
-import com.monederobingo.database.model.SelectQuery;
-import com.monederobingo.database.model.ServiceResult;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
-
 @RunWith(MockitoJUnitRunner.class)
-public class DatabaseController_SelectTest
-{
+public class DatabaseController_SelectTest {
     private DatabaseController controller;
-    private SelectQuery selectQuery;
+    private SelectQueryRQ selectQueryRQ;
     @Mock
     private DatabaseService service;
     @Mock
     private ServiceLogger serviceLogger;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         controller = new DatabaseController(service, serviceLogger);
-        selectQuery = new SelectQuery("");
+        selectQueryRQ = new SelectQueryRQ("", new ColumnValue[0]);
     }
 
     @Test
-    public void shouldReturnErrorResponseForSelectWhenExceptionIsCaught() throws Exception
-    {
+    public void shouldReturnErrorResponseForSelectWhenExceptionIsCaught() throws Exception {
         // given
-        given(service.select(selectQuery)).willThrow(new Exception());
+        given(service.select(selectQueryRQ)).willThrow(new Exception());
 
         // when
-        ResponseEntity<ServiceResult<String>> response = controller.select(selectQuery);
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> response = controller.select(selectQueryRQ);
 
         // then
         assertFailedResponse(response, serviceLogger);
     }
 
     @Test
-    public void shouldReturnSameServiceResultFromSelectService() throws Exception
-    {
+    public void shouldReturnSameServiceResultFromSelectService() throws Exception {
         // given
-        ServiceResult<String> serviceResult = new ServiceResult<>(true, "");
-        given(service.select(selectQuery)).willReturn(serviceResult);
+        xyz.greatapp.libs.service.ServiceResult serviceResult = new xyz.greatapp.libs.service.ServiceResult(true, "");
+        given(service.select(selectQueryRQ)).willReturn(serviceResult);
 
         // when
-        ResponseEntity<ServiceResult<String>> response = controller.select(selectQuery);
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> response = controller.select(selectQueryRQ);
 
         // then
         assertEquals(serviceResult, response.getBody());
@@ -64,46 +60,42 @@ public class DatabaseController_SelectTest
     }
 
     @Test
-    public void shouldCallDatabaseServiceForSelect() throws Exception
-    {
+    public void shouldCallDatabaseServiceForSelect() throws Exception {
         // when
-        controller.select(selectQuery);
+        controller.select(selectQueryRQ);
 
         // then
-        verify(service).select(selectQuery);
+        verify(service).select(selectQueryRQ);
     }
 
     @Test
-    public void shouldReturnBadRequestErrorIfParamIsNull()
-    {
+    public void shouldReturnBadRequestErrorIfParamIsNull() {
         //when
-        ResponseEntity<ServiceResult<String>> select = controller.select(null);
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> select = controller.select(null);
 
         //then
         assertEquals(BAD_REQUEST, select.getStatusCode());
     }
 
     @Test
-    public void shouldReturnBadRequestErrorIfSelectQueryHasNullQuery()
-    {
+    public void shouldReturnBadRequestErrorIfSelectQueryHasNullQuery() {
         //given
-        SelectQuery query = new SelectQuery(null);
+        SelectQueryRQ query = new SelectQueryRQ(null, new ColumnValue[0]);
 
         //when
-        ResponseEntity<ServiceResult<String>> select = controller.select(query);
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> select = controller.select(query);
 
         //then
         assertEquals(BAD_REQUEST, select.getStatusCode());
     }
 
     @Test
-    public void shouldReturnErrorMessageIfSelectQueryHasNullQuery()
-    {
+    public void shouldReturnErrorMessageIfSelectQueryHasNullQuery() {
         //given
-        SelectQuery query = new SelectQuery(null);
+        SelectQueryRQ query = new SelectQueryRQ(null, new ColumnValue[0]);
 
         //when
-        ResponseEntity<ServiceResult<String>> select = controller.select(query);
+        ResponseEntity<xyz.greatapp.libs.service.ServiceResult> select = controller.select(query);
 
         //then
         assertEquals("query.must.not.be.null", select.getBody().getMessage());
