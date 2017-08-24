@@ -18,6 +18,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import xyz.greatapp.libs.database.queries.Select;
 import xyz.greatapp.libs.service.Environment;
@@ -47,7 +48,7 @@ public class DatabaseServiceImpl implements DatabaseService
 
     @Autowired
     public DatabaseServiceImpl(ThreadContextService oldThreadContextService, DatabaseAdapterFactory oldDatabaseAdapterFactory,
-                               xyz.greatapp.libs.service.context.ThreadContextService threadContextService,
+                               @Qualifier("newThreadContextService") xyz.greatapp.libs.service.context.ThreadContextService threadContextService,
                                xyz.greatapp.libs.database.adapter.DatabaseAdapterFactory databaseAdapterFactory)
     {
         this.oldThreadContextService = oldThreadContextService;
