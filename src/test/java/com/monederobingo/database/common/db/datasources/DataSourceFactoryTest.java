@@ -35,16 +35,12 @@ public class DataSourceFactoryTest
     private DriverManagerDataSource driverManagerDataSource;
     @Mock
     private Connection connection;
-    @Mock
-    private PreparedStatement preparedStatement;
 
     @Before
     public void setUp() throws Exception
     {
         dataSourceFactory = new DataSourceFactory(driverManagerDataSourceFactory);
         given(driverManagerDataSourceFactory.createDriverManagerDataSource()).willReturn(driverManagerDataSource);
-        given(driverManagerDataSource.getConnection()).willReturn(connection);
-        given(connection.prepareStatement(anyString())).willReturn(preparedStatement);
     }
 
     @Test
@@ -80,20 +76,6 @@ public class DataSourceFactoryTest
 
         // then
         verify(driverManagerDataSourceFactory, times(2)).createDriverManagerDataSource();
-    }
-
-    @Test
-    public void shouldChangeSearchPathInConnection() throws Exception
-    {
-        //given
-        given(prodEnvironment.getDatabaseUsername()).willReturn("user");
-        given(prodEnvironment.getSchema()).willReturn("schema");
-
-        // when
-        dataSourceFactory.getDataSource(prodEnvironment);
-
-        // then
-        verify(connection).prepareStatement("ALTER ROLE user SET search_path = schema");
     }
 
 }

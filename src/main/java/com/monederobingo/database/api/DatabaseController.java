@@ -56,7 +56,7 @@ public class DatabaseController
     }
 
     @RequestMapping(method = POST, value = "/selectList")
-    public ResponseEntity<ServiceResult<String>> selectList(@RequestBody SelectQuery query) throws Exception
+    public ResponseEntity<xyz.greatapp.libs.service.ServiceResult> selectList(@RequestBody SelectQueryRQ query) throws Exception
     {
         try
         {
@@ -65,7 +65,7 @@ public class DatabaseController
         catch (Exception e)
         {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 
