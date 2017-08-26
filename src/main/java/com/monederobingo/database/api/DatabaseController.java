@@ -2,8 +2,6 @@ package com.monederobingo.database.api;
 
 import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.libs.ServiceLogger;
-import com.monederobingo.database.model.ServiceResult;
-import com.monederobingo.database.model.UpdateQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.greatapp.libs.service.requests.database.InsertQueryRQ;
 import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
+import xyz.greatapp.libs.service.requests.database.UpdateQueryRQ;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -65,12 +64,12 @@ public class DatabaseController {
     }
 
     @RequestMapping(method = POST, value = "/update")
-    public ResponseEntity<ServiceResult<Integer>> update(@RequestBody UpdateQuery query) throws Exception {
+    public ResponseEntity<xyz.greatapp.libs.service.ServiceResult> update(@RequestBody UpdateQueryRQ query) throws Exception {
         try {
             return new ResponseEntity<>(databaseService.update(query), OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ServiceResult<>(false, e.getMessage()), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 }

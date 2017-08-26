@@ -3,8 +3,6 @@ package com.monederobingo.database.services;
 import com.monederobingo.database.api.interfaces.DatabaseService;
 import com.monederobingo.database.common.db.adapter.DataBaseAdapter;
 import com.monederobingo.database.common.db.adapter.DatabaseAdapterFactory;
-import com.monederobingo.database.model.ServiceResult;
-import com.monederobingo.database.model.UpdateQuery;
 import com.monederobingo.libs.common.context.ThreadContextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,9 +10,11 @@ import org.springframework.stereotype.Component;
 import xyz.greatapp.libs.database.queries.Insert;
 import xyz.greatapp.libs.database.queries.Select;
 import xyz.greatapp.libs.database.queries.SelectList;
+import xyz.greatapp.libs.database.queries.Update;
 import xyz.greatapp.libs.service.Environment;
 import xyz.greatapp.libs.service.requests.database.InsertQueryRQ;
 import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
+import xyz.greatapp.libs.service.requests.database.UpdateQueryRQ;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,15 +74,13 @@ public class DatabaseServiceImpl implements DatabaseService {
     @Override
     public xyz.greatapp.libs.service.ServiceResult insert(InsertQueryRQ query) throws Exception {
         getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
-
         return new Insert(getDatabaseAdapter(), getSchema(), query)
                 .execute();
     }
 
-    @Override
-    public ServiceResult<Integer> update(UpdateQuery query) throws Exception {
+    public xyz.greatapp.libs.service.ServiceResult update(UpdateQueryRQ query) throws Exception {
         getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
-        int updatedRows = getOldDatabaseAdapter().executeUpdate(query.getQuery());
-        return new ServiceResult<>(true, "", updatedRows);
+        return new Update(getDatabaseAdapter(), getSchema(), query)
+                .execute();
     }
 }
