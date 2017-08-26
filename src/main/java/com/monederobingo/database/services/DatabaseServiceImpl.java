@@ -35,15 +35,15 @@ public class DatabaseServiceImpl implements DatabaseService
     private final static Map<Environment, String> schemasMap = new HashMap<>();
 
     static {
-        schemasMap.put(Environment.DEV, "greatappxyz");
-        schemasMap.put(Environment.PROD, "greatappxyz");
-        schemasMap.put(Environment.AUTOMATION_TEST, "greatappxyz_test");
-        schemasMap.put(Environment.UAT, "greatappxyz_test");
+        schemasMap.put(Environment.DEV, "monedero");
+        schemasMap.put(Environment.PROD, "monedero");
+        schemasMap.put(Environment.AUTOMATION_TEST, "monedero_test");
+        schemasMap.put(Environment.UAT, "monedero_test");
         schemasMap.put(Environment.INTEGRATION_TEST, "public");
     }
 
     private String getSchema() {
-        return schemasMap.getOrDefault(oldThreadContextService.getEnvironment(), "greatappxyz_test") + ".";
+        return schemasMap.getOrDefault(threadContextService.getEnvironment(), "monedero_test") + ".";
     }
 
     @Autowired
@@ -83,6 +83,7 @@ public class DatabaseServiceImpl implements DatabaseService
     @Override
     public ServiceResult<String> selectList(SelectQuery query) throws Exception
     {
+        getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
         JSONArray object = getOldDatabaseAdapter().selectList(new DbBuilder()
         {
             @Override
@@ -117,12 +118,14 @@ public class DatabaseServiceImpl implements DatabaseService
 
     @Override public ServiceResult<Long> insert(InsertQuery query) throws Exception
     {
+        getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
         long newId = getOldDatabaseAdapter().executeInsert(query.getQuery(), query.getIdColumnName());
         return new ServiceResult<>(true, "", newId);
     }
 
     @Override public ServiceResult<Integer> update(UpdateQuery query) throws Exception
     {
+        getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
         int updatedRows = getOldDatabaseAdapter().executeUpdate(query.getQuery());
         return new ServiceResult<>(true, "", updatedRows);
     }

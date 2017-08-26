@@ -33,7 +33,7 @@ public class AppConfiguration
     }
 
     @Bean
-    public DevEnvironment getDevEnvironment()
+    public DevEnvironment getOldDevEnvironment()
     {
         return new DevEnvironment();
     }
@@ -45,21 +45,27 @@ public class AppConfiguration
     }
 
     @Bean
-    public UATEnvironment getUATEnvironment()
+    public UATEnvironment getOldUATEnvironment()
     {
         return new UATEnvironment();
     }
 
     @Bean
-    public ProdEnvironment getProdEnvironment()
+    public ProdEnvironment getOldProdEnvironment()
     {
         return new ProdEnvironment();
     }
 
     @Bean
-    public ContextFilter getContextFilter()
+    public ContextFilter getOldContextFilter()
     {
         return new ContextFilter(getOldThreadContextService(), getEnvironmentFactory());
+    }
+
+    @Bean
+    public xyz.greatapp.libs.service.filters.ContextFilter getContextFilter()
+    {
+        return new xyz.greatapp.libs.service.filters.ContextFilter(getThreadContextService());
     }
 
     @Bean(name = "newThreadContextService")
@@ -70,21 +76,46 @@ public class AppConfiguration
     @Bean
     public DatabaseAdapterFactory getDatabaseAdapterFactory() {
         return new DatabaseAdapterFactory(new DataSourceFactory(new DriverManagerDataSourceFactory()),
-                new xyz.greatapp.libs.database.environments.DevEnvironment(),
-                new xyz.greatapp.libs.database.environments.UATEnvironment(),
-                new xyz.greatapp.libs.database.environments.ProdEnvironment(),
-                new AutomationTestEnvironment(),
-                new IntegrationTestEnvironment());
+                getDevEnvironment(),
+                getUATEnvironment(),
+                getProdEnvironment(),
+                getAutomationTestEnvironment(),
+                getIntegrationTestEnvironment());
+    }
+
+    @Bean
+    public AutomationTestEnvironment getAutomationTestEnvironment() {
+        return new AutomationTestEnvironment();
+    }
+
+    @Bean
+    public xyz.greatapp.libs.database.environments.DevEnvironment getDevEnvironment() {
+        return new xyz.greatapp.libs.database.environments.DevEnvironment();
+    }
+
+    @Bean
+    public xyz.greatapp.libs.database.environments.UATEnvironment getUATEnvironment() {
+        return new xyz.greatapp.libs.database.environments.UATEnvironment();
+    }
+
+    @Bean
+    public xyz.greatapp.libs.database.environments.ProdEnvironment getProdEnvironment() {
+        return new xyz.greatapp.libs.database.environments.ProdEnvironment();
+    }
+
+    @Bean
+    public xyz.greatapp.libs.database.environments.IntegrationTestEnvironment getIntegrationTestEnvironment() {
+        return new xyz.greatapp.libs.database.environments.IntegrationTestEnvironment();
     }
 
     private EnvironmentFactory getEnvironmentFactory()
     {
         return new EnvironmentFactory(
-                getDevEnvironment(),
+                getOldDevEnvironment(),
                 getUnitTestEnvironment(),
                 getFunctionalTestEnvironment(),
-                getUATEnvironment(),
-                getProdEnvironment()
+                getOldUATEnvironment(),
+                getOldProdEnvironment()
         );
     }
 }

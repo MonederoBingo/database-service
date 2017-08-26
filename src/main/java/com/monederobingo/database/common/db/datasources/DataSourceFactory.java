@@ -37,7 +37,6 @@ public class DataSourceFactory
         if (dataSource == null)
             throw new RuntimeException("DataSource cannot be null!");
 
-        dataSource.getConnection().prepareStatement("ALTER ROLE " + environment.getDatabaseUsername() + " SET search_path = " + environment.getSchema()).execute();
         return dataSource;
     }
 }
