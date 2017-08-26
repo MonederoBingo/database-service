@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.greatapp.libs.service.requests.database.InsertQueryRQ;
-import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
-import xyz.greatapp.libs.service.requests.database.UpdateQueryRQ;
+import xyz.greatapp.libs.service.database.requests.InsertQueryRQ;
+import xyz.greatapp.libs.service.database.requests.SelectQueryRQ;
+import xyz.greatapp.libs.service.database.requests.UpdateQueryRQ;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;

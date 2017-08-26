@@ -12,9 +12,9 @@ import xyz.greatapp.libs.database.queries.Select;
 import xyz.greatapp.libs.database.queries.SelectList;
 import xyz.greatapp.libs.database.queries.Update;
 import xyz.greatapp.libs.service.Environment;
-import xyz.greatapp.libs.service.requests.database.InsertQueryRQ;
-import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
-import xyz.greatapp.libs.service.requests.database.UpdateQueryRQ;
+import xyz.greatapp.libs.service.database.requests.InsertQueryRQ;
+import xyz.greatapp.libs.service.database.requests.SelectQueryRQ;
+import xyz.greatapp.libs.service.database.requests.UpdateQueryRQ;
 
 import java.util.HashMap;
 import java.util.Map;

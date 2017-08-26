@@ -63,9 +63,9 @@ public class AppConfiguration
     }
 
     @Bean
-    public xyz.greatapp.libs.service.filters.ContextFilter getContextFilter()
+    public xyz.greatapp.libs.service.context.ContextFilter getContextFilter()
     {
-        return new xyz.greatapp.libs.service.filters.ContextFilter(getThreadContextService());
+        return new xyz.greatapp.libs.service.context.ContextFilter(getThreadContextService());
     }
 
     @Bean(name = "newThreadContextService")

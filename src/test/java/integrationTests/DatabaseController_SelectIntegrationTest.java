@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
-import xyz.greatapp.libs.service.requests.database.ColumnValue;
-import xyz.greatapp.libs.service.requests.database.SelectQueryRQ;
+import xyz.greatapp.libs.service.database.requests.fields.ColumnValue;
+import xyz.greatapp.libs.service.database.requests.SelectQueryRQ;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseController_SelectIntegrationTest extends IntegrationTest

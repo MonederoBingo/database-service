@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
-import xyz.greatapp.libs.service.requests.database.ColumnValue;
-import xyz.greatapp.libs.service.requests.database.InsertQueryRQ;
+import xyz.greatapp.libs.service.database.requests.fields.ColumnValue;
+import xyz.greatapp.libs.service.database.requests.InsertQueryRQ;
 
 import static com.monederobingo.database.api.ControllerAssertions.assertFailedResponse;
 import static org.junit.Assert.assertEquals;
