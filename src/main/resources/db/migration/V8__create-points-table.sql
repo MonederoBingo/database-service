@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS points (
   points_to_earn  DECIMAL NOT NULL,
   required_amount DECIMAL NOT NULL,
   earned_points   DECIMAL NOT NULL,
-  date            TIMESTAMP WITH TIME ZONE,
+  date            TEXT,
   UNIQUE (company_id, sale_key)
 );
