@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS promotion (
   client_id    INT,
   description  TEXT    NOT NULL,
   used_points  DECIMAL NOT NULL,
-  date         TIMESTAMP WITH TIME ZONE
+  date         TEXT
 );

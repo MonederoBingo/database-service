@@ -7,11 +7,10 @@ import com.monederobingo.libs.common.context.ThreadContextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import xyz.greatapp.libs.database.queries.Insert;
-import xyz.greatapp.libs.database.queries.Select;
-import xyz.greatapp.libs.database.queries.SelectList;
-import xyz.greatapp.libs.database.queries.Update;
+import xyz.greatapp.libs.database.queries.*;
 import xyz.greatapp.libs.service.Environment;
+import xyz.greatapp.libs.service.ServiceResult;
+import xyz.greatapp.libs.service.database.requests.DeleteQueryRQ;
 import xyz.greatapp.libs.service.database.requests.InsertQueryRQ;
 import xyz.greatapp.libs.service.database.requests.SelectQueryRQ;
 import xyz.greatapp.libs.service.database.requests.UpdateQueryRQ;
@@ -81,6 +80,13 @@ public class DatabaseServiceImpl implements DatabaseService {
     public xyz.greatapp.libs.service.ServiceResult update(UpdateQueryRQ query) throws Exception {
         getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
         return new Update(getDatabaseAdapter(), getSchema(), query)
+                .execute();
+    }
+
+    @Override
+    public ServiceResult delete(DeleteQueryRQ query) throws Exception {
+        getOldDatabaseAdapter().executeUpdate("ALTER ROLE postgres SET search_path = monedero_test;");
+        return new Delete(getDatabaseAdapter(), getSchema(), query)
                 .execute();
     }
 }

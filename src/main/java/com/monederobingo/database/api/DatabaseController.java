@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.greatapp.libs.service.database.requests.DeleteQueryRQ;
 import xyz.greatapp.libs.service.database.requests.InsertQueryRQ;
 import xyz.greatapp.libs.service.database.requests.SelectQueryRQ;
 import xyz.greatapp.libs.service.database.requests.UpdateQueryRQ;
@@ -67,6 +68,16 @@ public class DatabaseController {
     public ResponseEntity<xyz.greatapp.libs.service.ServiceResult> update(@RequestBody UpdateQueryRQ query) throws Exception {
         try {
             return new ResponseEntity<>(databaseService.update(query), OK);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(method = POST, value = "/delete")
+    public ResponseEntity<xyz.greatapp.libs.service.ServiceResult> delete(@RequestBody DeleteQueryRQ query) throws Exception {
+        try {
+            return new ResponseEntity<>(databaseService.delete(query), OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(new xyz.greatapp.libs.service.ServiceResult(false, e.getMessage()), INTERNAL_SERVER_ERROR);
