@@ -1,3 +1,7 @@
+Monedero Bingo is a SaaS solution that allows companies give loyalty points to their customers and clients using their phone number.
+
+Customers can redeem their points to get promotions and giveaways. It provides a robust REST API service intended for internal use but also aimed to external clients.
+
 This service provides support to Monedero Bingo services for sending SQL queries to DB. [![CircleCI](https://circleci.com/gh/MonederoBingo/database-service/tree/master.svg?style=svg)](https://circleci.com/gh/MonederoBingo/database-service/tree/master)
 
 
